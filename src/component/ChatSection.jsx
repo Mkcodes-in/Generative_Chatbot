@@ -11,7 +11,7 @@ export default function ChatSection() {
           <div
           className={`flex ${itm.role === "user" ? "justify-end" : "justify-start"}`} 
           key={itm.content}>
-            <div className={`px-4 py-2 rounded-2xl ${itm.role === 'user' ? "bg-zinc-800 shadow-2xl" : ""}`}>
+            <div className={`px-4 py-2 rounded-2xl ${itm.role === 'user' ? "bg-zinc-700/40 shadow-lg" : ""}`}>
               {itm.content}
             </div>
           </div>
