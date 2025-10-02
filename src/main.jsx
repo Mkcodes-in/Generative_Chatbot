@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import ThemeProvider from './context/ThemeContext.jsx'
 import ChatProvider from './context/ChatContext.jsx'
+import AiLoaderProvider from './context/AiLoader.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <ChatProvider>
-    <ThemeProvider>
+  <AiLoaderProvider>
+    <ChatProvider>
+      <ThemeProvider>
         <App />
-    </ThemeProvider>
-  </ChatProvider>,
+      </ThemeProvider>
+    </ChatProvider>
+  </AiLoaderProvider>,
 )

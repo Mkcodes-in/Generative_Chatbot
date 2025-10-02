@@ -1,12 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { BsArrowUp, BsPaperclip } from 'react-icons/bs';
 import UseChat from '../hooks/UseChat';
 import { sendMsg } from '../api/api';
+import UseAiLoader from '../hooks/UseAiLoader';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
     const { state, dispatch } = UseChat();
+    const {setAiLoader} = UseAiLoader();
 
     const handleInputChange = (e) => {
         setMessage(e.target.value);
@@ -18,7 +20,7 @@ export default function InputField() {
     const handleSubmit = () => {
         const userMsg = { role: "user", content: message }
         dispatch({ type: "SET_MSG", payload: userMsg });
-        sendMsg([...state.messages, userMsg], dispatch);
+        sendMsg([...state.messages, userMsg], dispatch, setAiLoader);
         if (message.trim()) {
             console.log('Message sent:', message);
             setMessage('');

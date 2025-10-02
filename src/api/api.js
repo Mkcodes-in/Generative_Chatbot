@@ -4,7 +4,7 @@ const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
 const model = "llama-3.3-70b-versatile";
 
-export async function sendMsg(messages, dispatch) {
+export async function sendMsg(messages, dispatch, setAiLoader) {
 
   const messagesWithSystem = [
     systemPrompt,
@@ -12,6 +12,7 @@ export async function sendMsg(messages, dispatch) {
   ]
 
   try {
+    setAiLoader(true);
     const completion = await groq.chat.completions.create({
       model: model,
       messages: messagesWithSystem,
@@ -27,5 +28,7 @@ export async function sendMsg(messages, dispatch) {
 
     console.error("Groq API error:", error);
 
+  } finally {
+    setAiLoader(false);
   }
 }
