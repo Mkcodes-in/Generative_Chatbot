@@ -3,13 +3,17 @@ import { BsArrowUp, BsPaperclip } from 'react-icons/bs';
 import UseChat from '../hooks/UseChat';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
+import { FaFilePdf } from 'react-icons/fa';
+import { IoMdClose } from 'react-icons/io';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
     const { state, dispatch } = UseChat();
-    const {setAiLoader} = UseAiLoader();
+    const { setAiLoader } = UseAiLoader();
+    const [file, setFile] = useState(null);
 
+    // inputField auto  re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);
         const textArea = textareaRef.current;
@@ -22,7 +26,6 @@ export default function InputField() {
         dispatch({ type: "SET_MSG", payload: userMsg });
         sendMsg([...state.messages, userMsg], dispatch, setAiLoader);
         if (message.trim()) {
-            console.log('Message sent:', message);
             setMessage('');
         }
     };
@@ -34,11 +37,24 @@ export default function InputField() {
         }
     };
 
+    // file upload logic
+    function handleFileChange(e) {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+    }
+    console.log(formateSize(file ? file.size : ""));
+    function formateSize(file) {
+        if (file < 1024) return file + " Bytes";
+        else if (file < 1024 * 1024) return (file / 1024).toFixed(2) + " MB";
+        else return (file / (1024 * 1024)).toFixed(2) + " MB";
+    }
+
+    console.log(state)
     return (
-        <div className='w-full p-4 pt-2 bg-transparent'>
+        <div className='w-full p-4 pt-2 bg-transparent '>
             <div
                 ref={textareaRef}
-                className='relative bg-[#303030] text-white pb-14 shadow-xl rounded-3xl w-full max-w-3xl mx-auto'
+                className='relative bg-[#303030] text-white pb-14 shadow-xl rounded-3xl w-full max-w-3xl mx-auto z-40'
             >
                 <textarea
                     value={message}
@@ -57,7 +73,11 @@ export default function InputField() {
                 >
                     <BsPaperclip className="text-lg" />
                 </label>
-                <input className='hidden' type="file" id="file" />
+                <input
+                    onChange={handleFileChange}
+                    className='hidden'
+                    type="file"
+                    id="file" />
 
                 {/* Send Button */}
                 <button
@@ -70,6 +90,22 @@ export default function InputField() {
                 >
                     <BsArrowUp className="text-lg font-bold" />
                 </button>
+                {/* File upload */}
+                <div>
+                    {file && (
+                        <div className="absolute -top-14 z-0 text-white p-3 w-full rounded-t-2xl bg-[#303030] flex items-center justify-between">
+                            <div className='flex items-center'> 
+                                <FaFilePdf className="text-2xl mr-2" />
+                                <div className="flex flex-col">
+                                    <span>{file.name}</span>
+                                    <span>{(file.size / 1024).toFixed(2)} KB</span>
+                                </div></div>
+                            <button
+                            onClick={() => setFile(null)} 
+                            className='cursor-pointer'><IoMdClose /></button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
