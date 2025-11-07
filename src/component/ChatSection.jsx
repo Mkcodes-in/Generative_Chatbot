@@ -16,9 +16,9 @@ export default function ChatSection() {
             key={index}
           >
             <div
-              className={`px-4 py-2 rounded-2xl ${itm.role === "user" ? "bg-zinc-700/40 shadow-lg max-w-lg" : "max-w-full"}`}
+              className={`px-4 py-2 rounded-2xl ${itm.role === "user" ? "bg-zinc-700/40 shadow-sm max-w-lg" : "max-w-full"}`}
               style={{ maxWidth: itm.role === "user" ? "70%" : "100%" }}
-            >
+            > 
               {itm.role === "assistant" ? (
                 <div
                   dangerouslySetInnerHTML={{

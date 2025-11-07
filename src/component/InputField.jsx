@@ -5,6 +5,7 @@ import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
 import { FaFilePdf } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
+import PdfParsing from '../parse/PdfParsing';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -51,10 +52,10 @@ export default function InputField() {
 
     console.log(state)
     return (
-        <div className='w-full p-4 pt-2 bg-transparent '>
+        <div className='w-full p-4 pt-2 bg-transparent'>
             <div
                 ref={textareaRef}
-                className='relative bg-[#303030] text-white pb-14 shadow-xl rounded-3xl w-full max-w-3xl mx-auto z-40'
+                className='relative bg-[#303030] text-white pb-14 shadow-lg rounded-3xl w-full max-w-3xl mx-auto z-40'
             >
                 <textarea
                     value={message}
@@ -92,19 +93,7 @@ export default function InputField() {
                 </button>
                 {/* File upload */}
                 <div>
-                    {file && (
-                        <div className="absolute -top-14 z-0 text-white p-3 w-full rounded-t-2xl bg-[#303030] flex items-center justify-between">
-                            <div className='flex items-center'> 
-                                <FaFilePdf className="text-2xl mr-2" />
-                                <div className="flex flex-col">
-                                    <span>{file.name}</span>
-                                    <span>{(file.size / 1024).toFixed(2)} KB</span>
-                                </div></div>
-                            <button
-                            onClick={() => setFile(null)} 
-                            className='cursor-pointer'><IoMdClose /></button>
-                        </div>
-                    )}
+                    <PdfParsing />
                 </div>
             </div>
         </div>
