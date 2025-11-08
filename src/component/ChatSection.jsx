@@ -23,8 +23,8 @@ export default function ChatSection() {
                 <div
                   dangerouslySetInnerHTML={{
                     __html: marked(itm.content, {
-                      gfm: true, // Enables GitHub flavored markdown
-                      breaks: true, // Allows line breaks
+                      gfm: true, 
+                      breaks: true, 
                     })
                   }}
                 />
