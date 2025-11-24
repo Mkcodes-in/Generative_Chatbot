@@ -5,7 +5,6 @@ import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
 import { FaFilePdf } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
-import PdfParsing from '../parse/PdfParsing';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -14,7 +13,7 @@ export default function InputField() {
     const { setAiLoader } = UseAiLoader();
     const [file, setFile] = useState(null);
 
-    // inputField auto  re-size
+    // inputField auto re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);
         const textArea = textareaRef.current;
@@ -43,13 +42,12 @@ export default function InputField() {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
     }
-    console.log(formateSize(file ? file.size : ""));
+
     function formateSize(file) {
         if (file < 1024) return file + " Bytes";
         else if (file < 1024 * 1024) return (file / 1024).toFixed(2) + " MB";
         else return (file / (1024 * 1024)).toFixed(2) + " MB";
     }
-
     console.log(state)
     return (
         <div className='w-full p-4 pt-2 bg-transparent'>
@@ -93,7 +91,7 @@ export default function InputField() {
                 </button>
                 {/* File upload */}
                 <div>
-                    <PdfParsing />
+                        
                 </div>
             </div>
         </div>
