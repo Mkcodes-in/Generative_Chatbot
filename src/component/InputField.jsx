@@ -1,15 +1,14 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { BsArrowUp, BsPaperclip } from 'react-icons/bs';
-import UseChat from '../hooks/UseChat';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
 import { FaFilePdf } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
+import { supabase } from '../supabase/supabase';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
-    const { state, dispatch } = UseChat();
     const { setAiLoader } = UseAiLoader();
     const [file, setFile] = useState(null);
 
@@ -21,13 +20,21 @@ export default function InputField() {
         textArea.style.height = Math.min(textArea.scrollHeight, 150) + "px";
     };
 
-    const handleSubmit = () => {
-        const userMsg = { role: "user", content: message }
-        dispatch({ type: "SET_MSG", payload: userMsg });
-        sendMsg([...state.messages, userMsg], dispatch, setAiLoader);
-        if (message.trim()) {
-            setMessage('');
+    const handleSubmit = async () => {
+        if (!message.trim()) return;
+
+        const userMsg = {role: "user", message: message };
+
+        try {
+            await supabase.from("messages").insert(userMsg);
+        } catch (error) {
+            console.log(error);
         }
+
+        // sendMsg will fetch all messages from DB and call LLM
+        sendMsg(setAiLoader);
+
+        setMessage('');
     };
 
     const handleKeyPress = (e) => {
@@ -48,7 +55,7 @@ export default function InputField() {
         else if (file < 1024 * 1024) return (file / 1024).toFixed(2) + " MB";
         else return (file / (1024 * 1024)).toFixed(2) + " MB";
     }
-    console.log(state)
+
     return (
         <div className='w-full p-4 pt-2 bg-transparent'>
             <div
@@ -91,7 +98,7 @@ export default function InputField() {
                 </button>
                 {/* File upload */}
                 <div>
-                        
+
                 </div>
             </div>
         </div>

@@ -1,34 +1,24 @@
-import React, { createContext, useReducer } from 'react'
-
-const initialise = {
-    user: null, 
-    messages: [],
-}
-
-const reducer = (state, action) => {
-    switch (action.type) {
-        case "SET_MSG":
-            return {
-                ...state, messages: [...state.messages, action.payload]
-            };
-    
-        case "SHOW_MSG":
-            return {
-                ...state, 
-                messages: action.payload
-            };
-
-        default:
-            return state;
-    }
-}
+import React, { createContext, useEffect, useState } from 'react';
+import { getChat } from '../utilits/getChat';
 
 export const ChatContext = createContext();
 
 export default function ChatProvider({ children }) {
-    const [state, dispatch] = useReducer(reducer, initialise);
+    const [state, setState] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await getChat();
+                if (Array.isArray(data)) setState(data);
+            } catch (err) {
+                console.error('Failed to load chat messages:', err);
+            }
+        })();
+    }, []);
+
     return (
-        <ChatContext.Provider value={{state, dispatch}}>
+        <ChatContext.Provider value={{ state }}>
             {children}
         </ChatContext.Provider>
     )

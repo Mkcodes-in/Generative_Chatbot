@@ -10,7 +10,7 @@ function App() {
   const { theme } = UseTheme();
   const { state } = UseChat();
 
-  const isEmpty = state?.messages.length === 0;
+  const isEmpty = state?.length === 0;
 
   return (
     <div className={`max-7xl mx-auto h-screen flex flex-col transition-colors duration-300 ease-in-out justify-center ${theme ? "bg-[#212121]" : "bg-gray-50"}`}>
