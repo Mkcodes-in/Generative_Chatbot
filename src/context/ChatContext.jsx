@@ -7,6 +7,7 @@ export const ChatContext = createContext();
 export default function ChatProvider({ children }) {
     const [state, setState] = useState([]);
 
+    // fetch data from server
     useEffect(() => {
         (async () => {
             try {
@@ -17,6 +18,7 @@ export default function ChatProvider({ children }) {
             }
         })();
 
+        // subscribe for realtime database
         const channel = supabase
             .channel('chat-realtime')
             .on(
@@ -30,6 +32,7 @@ export default function ChatProvider({ children }) {
                 }
             )
             .subscribe();
+
         return () => {
             supabase.removeChannel(channel);
         }
