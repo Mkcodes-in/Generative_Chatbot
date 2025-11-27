@@ -5,13 +5,15 @@ import UseAiLoader from '../hooks/UseAiLoader';
 import { FaFilePdf } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { supabase } from '../supabase/supabase';
+import UseChat from '../hooks/UseChat';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
     const { setAiLoader } = UseAiLoader();
+    const {activeChatId, setActiveChatId} = UseChat();
     const [file, setFile] = useState(null);
-
+    console.log(activeChatId)
     // inputField auto re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);
@@ -22,8 +24,12 @@ export default function InputField() {
 
     const handleSubmit = async () => {
         if (!message.trim()) return;
-
-        const userMsg = {role: "user", message: message };
+        let chatId = activeChatId;
+        if(!chatId){
+            chatId = crypto.randomUUID();
+            setActiveChatId(chatId);
+        }
+        const userMsg = {role: "user", message: message, "chat_id": chatId};
 
         try {
             await supabase.from("messages").insert(userMsg);
@@ -31,8 +37,7 @@ export default function InputField() {
             console.log(error);
         }
 
-        // sendMsg will fetch all messages from DB and call LLM
-        sendMsg(setAiLoader);
+        sendMsg(chatId, setAiLoader);
 
         setMessage('');
     };

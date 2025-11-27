@@ -5,23 +5,22 @@ const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
 const model = "llama-3.3-70b-versatile";
 
-export async function sendMsg(setAiLoader) {
+export async function sendMsg(activeChatId, setAiLoader) {
   setAiLoader(true);
 
-  // 1. DB se poori history laao
   const { data: dbMessages } = await supabase
     .from("messages")
-    .select("*");
+    .select("*")
+    .eq("chat_id", activeChatId)
+    .order("created_id", {ascending: true});
 
-  // 2. Role/content format
-  const safeMsgs = dbMessages || [];  // null protection
+  const safeMsgs = dbMessages || []; 
   const messages = safeMsgs.map(m => ({
     role: m.role,
     content: m.message
   }));
 
   try {
-    // 3. System prompt + messages → LLM
     const completion = await groq.chat.completions.create({
       model,
       messages: [
@@ -32,10 +31,10 @@ export async function sendMsg(setAiLoader) {
 
     const aiResponse = completion.choices[0].message.content;
 
-    // 4. AI reply DB me insert (use the same column name as user inserts)
     await supabase.from("messages").insert({
       role: "assistant",
-      message: aiResponse
+      message: aiResponse, 
+      chat_id: activeChatId
     });
   } catch (error) {
     console.log(error)

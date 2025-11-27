@@ -1,11 +1,12 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { getChat } from '../utilits/getChat';
 import { supabase } from '../supabase/supabase';
+import { getChat } from '../utils/getChat';
 
 export const ChatContext = createContext();
 
 export default function ChatProvider({ children }) {
     const [state, setState] = useState([]);
+    const [activeChatId, setActiveChatId] = useState(null);
 
     // fetch data from server
     useEffect(() => {
@@ -39,7 +40,7 @@ export default function ChatProvider({ children }) {
     }, []);
 
     return (
-        <ChatContext.Provider value={{ state }}>
+        <ChatContext.Provider value={{ state, activeChatId, setActiveChatId }}>
             {children}
         </ChatContext.Provider>
     )

@@ -1,14 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../assets/logo.png'
 import { LuPanelLeft } from 'react-icons/lu'
 import { BsThreeDots } from 'react-icons/bs'
 import Button from './Button';
+import { fetchChat } from '../utils/fetchChat';
+import { ChatContext } from '../context/ChatContext';
+import UseChat from '../hooks/UseChat';
 export default function Slidebar({ isActive, setIsActive }) {
+  const { setActiveChatId } = UseChat();
+  const [chatId, setChatId] = useState([]);
+  const [message, setMessage] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetchChat();
+      const unique = [...new Set(res?.data.map(m => m.chat_id))];
+      setChatId(unique);
+      console.log(unique) // -> chat history array
+    })();
+  }, []);
+
+  function newChat() {
+    const chat_id = crypto.randomUUID();
+    setActiveChatId(chat_id);
+    setMessage([]);
+  }
+
   return (
     <aside className={`fixed top-0 left-0 h-screen w-64 bg-zinc-800 transition-transform duration-300 text-white 
       ${isActive ? "translate-x-0" : "-translate-x-full"}`}>
       <div className="flex flex-col gap-3 h-screen">
-        
+
         {/* Header */}
         <div className="flex-col gap-4 p-4 overflow-hidden">
           <div className='flex items-center justify-between'>
@@ -24,8 +46,9 @@ export default function Slidebar({ isActive, setIsActive }) {
             </button>
           </div>
           <div className='flex items-center justify-center mt-6'>
-            <Button 
-            btnName={"New chat"}
+            <Button
+              btnLink={""}
+              btnName={"New chat"}
             />
           </div>
         </div>
@@ -33,8 +56,10 @@ export default function Slidebar({ isActive, setIsActive }) {
         {/* History */}
         <div className="flex-grow overflow-auto">
           <h1 className='text-center text-xm text-gray-100/60'>Conversation</h1>
-          <div>
-
+          <div className='flex flex-col items-center justify-center'>
+            {chatId.map((itm) => {
+              <button key={itm}>{itm}</button>
+            })}
           </div>
         </div>
 
