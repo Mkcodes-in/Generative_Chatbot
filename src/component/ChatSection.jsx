@@ -7,7 +7,7 @@ export default function ChatSection() {
   const { aiLoader } = UseAiLoader();
   const { state } = UseChat();
   const messages = state?.messages ?? state ?? [];
-  console.log(messages);
+
   return (
     <section className="max-w-7xl mx-auto text-gray-50 p-4">
       <div className="flex flex-col gap-4 max-w-4xl mx-auto">
