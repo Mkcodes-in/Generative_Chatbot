@@ -13,7 +13,7 @@ export default function InputField() {
     const { setAiLoader } = UseAiLoader();
     const {activeChatId, setActiveChatId} = UseChat();
     const [file, setFile] = useState(null);
-    console.log(activeChatId)
+    
     // inputField auto re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);

@@ -7,15 +7,22 @@ export const ChatContext = createContext();
 export default function ChatProvider({ children }) {
     const [state, setState] = useState([]);
     const [activeChatId, setActiveChatId] = useState(null);
+    const [ChatHistoryId, setChatHistoryId] = useState(null);
 
     // fetch data from server
     useEffect(() => {
         (async () => {
             try {
-                const data = await getChat();
+                if (!ChatHistoryId) {
+                    setState([]); 
+                    return;
+                }
+
+                const data = await getChat(ChatHistoryId);
                 if (Array.isArray(data)) setState(data);
+
             } catch (err) {
-                console.error('Failed to load chat messages:', err);
+                console.error('Failed to load chat messages:', err.message);
             }
         })();
 
@@ -36,10 +43,10 @@ export default function ChatProvider({ children }) {
         return () => {
             supabase.removeChannel(channel);
         }
-    }, []);
+    }, [ChatHistoryId]);
 
     return (
-        <ChatContext.Provider value={{ state, activeChatId, setActiveChatId }}>
+        <ChatContext.Provider value={{ state, activeChatId, setActiveChatId, ChatHistoryId, setChatHistoryId }}>
             {children}
         </ChatContext.Provider>
     )

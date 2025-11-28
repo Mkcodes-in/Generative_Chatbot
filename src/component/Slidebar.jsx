@@ -7,10 +7,8 @@ import { fetchChat } from '../utils/fetchChat';
 import UseChat from '../hooks/UseChat';
 
 export default function Slidebar({ isActive, setIsActive }) {
-  const { setActiveChatId } = UseChat();
-  const [message, setMessage] = useState([]);
-  const [chatList, setChatList] = useState([]);
-  const [currentChatId, setCurrentChatId] = useState(null);
+  const { setActiveChatId, setChatHistoryId } = UseChat();
+  const [chatHistory, setChatHistory] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -28,17 +26,15 @@ export default function Slidebar({ isActive, setIsActive }) {
         }
       });
 
-      setChatList(unique);
+      setChatHistory(unique);
     })();
   }, []);
 
   function newChat() {
     const chat_id = crypto.randomUUID();
     setActiveChatId(chat_id);
-    setMessage([]);
   }
 
-  console.log(currentChatId)
   return (
     <aside className={`fixed top-0 left-0 h-screen w-64 bg-zinc-800 transition-transform duration-300 text-white 
       ${isActive ? "translate-x-0" : "-translate-x-full"}`}>
@@ -70,9 +66,9 @@ export default function Slidebar({ isActive, setIsActive }) {
         <div className="flex-grow overflow-auto">
           <h1 className='text-center text-xm text-gray-100/60'>Conversation</h1>
           <div className='flex flex-col gap-1 px-3 mt-2'>
-            {chatList.map((itm) => (
+            {chatHistory.map((itm) => (
               <button
-                onClick={() => setCurrentChatId(itm.chat_id)}
+                onClick={() => setChatHistoryId(itm.chat_id)}
                 key={itm.title}
                 className="
                 w-full px-2 py-1.5 text-start text-gray-50 rounded-xl
