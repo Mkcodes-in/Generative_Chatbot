@@ -8,6 +8,7 @@ import UseChat from '../hooks/UseChat';
 
 export default function Slidebar({ isActive, setIsActive }) {
   const { setActiveChatId } = UseChat();
+  const [message, setMessage] = useState([]);
   const [chatList, setChatList] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
 
@@ -74,7 +75,7 @@ export default function Slidebar({ isActive, setIsActive }) {
                 onClick={() => setCurrentChatId(itm.chat_id)}
                 key={itm.title}
                 className="
-                w-full px-2 py-1.5 text-start text-gray-50 rounded-md
+                w-full px-2 py-1.5 text-start text-gray-50 rounded-xl
                 hover:bg-gray-100/10 transition-colors duration-150
                 cursor-pointer truncate max-w-1.5:"
               >

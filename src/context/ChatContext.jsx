@@ -26,7 +26,6 @@ export default function ChatProvider({ children }) {
                 'postgres_changes',
                 { event: '*', schema: 'public', table: 'messages' },
                 (payload) => {
-                    console.log("Realtime Update:", payload);
                     if (payload.new) {
                         setState(prev => [...prev, payload.new]);
                     }

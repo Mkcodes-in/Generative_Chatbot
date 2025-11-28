@@ -12,7 +12,7 @@ export async function sendMsg(activeChatId, setAiLoader) {
     .from("messages")
     .select("*")
     .eq("chat_id", activeChatId)
-    .order("created_id", {ascending: true});
+    .order("created_at", {ascending: true});
 
   const safeMsgs = dbMessages || []; 
   const messages = safeMsgs.map(m => ({
