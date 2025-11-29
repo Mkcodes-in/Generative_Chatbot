@@ -9,8 +9,8 @@ export default function ChatSection() {
   const messages = state?.messages ?? state ?? [];
 
   return (
-    <section className="max-w-7xl mx-auto text-gray-50 p-4">
-      <div className="flex flex-col gap-4 max-w-4xl mx-auto">
+    <section className="max-w-7xl mx-auto text-gray-50 py-4">
+      <div className="flex flex-col gap-2 max-w-4xl mx-auto">
         {messages.map((itm, index) => (
           <div
             className={`flex ${itm.role === "user" ? "justify-end" : "justify-start"}`}

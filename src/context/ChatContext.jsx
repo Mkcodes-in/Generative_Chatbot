@@ -7,18 +7,18 @@ export const ChatContext = createContext();
 export default function ChatProvider({ children }) {
     const [state, setState] = useState([]);
     const [activeChatId, setActiveChatId] = useState(null);
-    const [ChatHistoryId, setChatHistoryId] = useState(null);
+    const [chatHistoryId, setChatHistoryId] = useState(null);
 
     // fetch data from server
     useEffect(() => {
         (async () => {
             try {
-                if (!ChatHistoryId) {
+                if (!chatHistoryId) {
                     setState([]); 
                     return;
                 }
 
-                const data = await getChat(ChatHistoryId);
+                const data = await getChat(chatHistoryId);
                 if (Array.isArray(data)) setState(data);
 
             } catch (err) {
@@ -43,10 +43,10 @@ export default function ChatProvider({ children }) {
         return () => {
             supabase.removeChannel(channel);
         }
-    }, [ChatHistoryId]);
+    }, [chatHistoryId]);
 
     return (
-        <ChatContext.Provider value={{ state, activeChatId, setActiveChatId, ChatHistoryId, setChatHistoryId }}>
+        <ChatContext.Provider value={{ state, activeChatId, setActiveChatId, chatHistoryId, setChatHistoryId }}>
             {children}
         </ChatContext.Provider>
     )

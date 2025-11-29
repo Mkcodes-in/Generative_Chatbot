@@ -12,9 +12,9 @@ export async function sendMsg(activeChatId, setAiLoader) {
     .from("messages")
     .select("*")
     .eq("chat_id", activeChatId)
-    .order("created_at", {ascending: true});
+    .order("created_at", { ascending: true });
 
-  const safeMsgs = dbMessages || []; 
+  const safeMsgs = dbMessages || [];
   const messages = safeMsgs.map(m => ({
     role: m.role,
     content: m.message
@@ -33,7 +33,7 @@ export async function sendMsg(activeChatId, setAiLoader) {
 
     await supabase.from("messages").insert({
       role: "assistant",
-      message: aiResponse, 
+      message: aiResponse,
       chat_id: activeChatId
     });
   } catch (error) {

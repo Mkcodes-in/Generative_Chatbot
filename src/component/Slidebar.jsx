@@ -7,7 +7,7 @@ import { fetchChat } from '../utils/fetchChat';
 import UseChat from '../hooks/UseChat';
 
 export default function Slidebar({ isActive, setIsActive }) {
-  const { setActiveChatId, setChatHistoryId } = UseChat();
+  const {chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
   const [chatHistory, setChatHistory] = useState([]);
 
   useEffect(() => {
@@ -68,12 +68,15 @@ export default function Slidebar({ isActive, setIsActive }) {
           <div className='flex flex-col gap-1 px-3 mt-2'>
             {chatHistory.map((itm) => (
               <button
-                onClick={() => setChatHistoryId(itm.chat_id)}
+                onClick={() => {
+                  setChatHistoryId(itm.chat_id)
+                  setIsActive(false);
+                }}
                 key={itm.title}
-                className="
+                className={`${itm.chat_id === chatHistoryId ? "bg-gray-100/10" : ""}
                 w-full px-2 py-1.5 text-start text-gray-50 rounded-xl
-                hover:bg-gray-100/10 transition-colors duration-150
-                cursor-pointer truncate max-w-1.5:"
+                hover:bg-gray-100/10 transition-colors duration-150 
+                cursor-pointer truncate max-w-1.5:`}
               >
                 {itm.title}
               </button>

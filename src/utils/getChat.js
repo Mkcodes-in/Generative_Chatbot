@@ -8,7 +8,7 @@ export async function getChat(chatId) {
       .order("created_at", { ascending: true });
 
     if (chatId) {
-      query = query.eq("chat_id", chatId); // filter applied
+      query = query.eq("chat_id", chatId);
     }
 
     const { data, error } = await query;

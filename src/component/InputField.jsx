@@ -13,7 +13,6 @@ export default function InputField() {
     const { setAiLoader } = UseAiLoader();
     const {activeChatId, setActiveChatId} = UseChat();
     const [file, setFile] = useState(null);
-    
     // inputField auto re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);
@@ -21,7 +20,7 @@ export default function InputField() {
         textArea.style.height = "auto";
         textArea.style.height = Math.min(textArea.scrollHeight, 150) + "px";
     };
-
+    
     const handleSubmit = async () => {
         if (!message.trim()) return;
         let chatId = activeChatId;
@@ -34,27 +33,27 @@ export default function InputField() {
         try {
             await supabase.from("messages").insert(userMsg);
         } catch (error) {
-            console.log(error);
+            console.error("Error ", error);
         }
-
+        
         sendMsg(chatId, setAiLoader);
-
+        
         setMessage('');
     };
-
+    
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSubmit();
         }
     };
-
+    
     // file upload logic
     function handleFileChange(e) {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
     }
-
+    
     function formateSize(file) {
         if (file < 1024) return file + " Bytes";
         else if (file < 1024 * 1024) return (file / 1024).toFixed(2) + " MB";
