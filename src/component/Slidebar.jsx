@@ -9,7 +9,7 @@ import UseChat from '../hooks/UseChat';
 export default function Slidebar({ isActive, setIsActive }) {
   const {chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
   const [chatHistory, setChatHistory] = useState([]);
-
+  
   useEffect(() => {
     (async () => {
       const res = await fetchChat();
@@ -35,6 +35,13 @@ export default function Slidebar({ isActive, setIsActive }) {
     setActiveChatId(chat_id);
   }
 
+  function existingChat(chatId) {
+    if (chatId) {
+      setActiveChatId(chatId);
+    }
+  }
+
+  console.log(chatHistoryId)
   return (
     <aside className={`fixed top-0 left-0 h-screen w-64 bg-zinc-800 transition-transform duration-300 text-white 
       ${isActive ? "translate-x-0" : "-translate-x-full"}`}>
@@ -69,7 +76,8 @@ export default function Slidebar({ isActive, setIsActive }) {
             {chatHistory.map((itm) => (
               <button
                 onClick={() => {
-                  setChatHistoryId(itm.chat_id)
+                  setChatHistoryId(itm.chat_id);
+                  existingChat(itm.chat_id);
                   setIsActive(false);
                 }}
                 key={itm.title}

@@ -23,12 +23,9 @@ export default function InputField() {
     
     const handleSubmit = async () => {
         if (!message.trim()) return;
-        let chatId = activeChatId;
-        if(!chatId){
-            chatId = crypto.randomUUID();
-            setActiveChatId(chatId);
-        }
-        const userMsg = {role: "user", message: message, "chat_id": chatId};
+        if(!activeChatId) return console.error("No active chat ID found.");
+       
+        const userMsg = {role: "user", message: message, "chat_id": activeChatId};
 
         try {
             await supabase.from("messages").insert(userMsg);
@@ -36,7 +33,7 @@ export default function InputField() {
             console.error("Error ", error);
         }
         
-        sendMsg(chatId, setAiLoader);
+        sendMsg(activeChatId, setAiLoader);
         
         setMessage('');
     };
