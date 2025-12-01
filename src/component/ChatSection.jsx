@@ -9,7 +9,7 @@ export default function ChatSection() {
   const messages = state?.messages ?? state ?? [];
 
   return (
-    <section className="max-w-7xl mx-auto text-gray-50 py-4">
+    <section className="max-w-7xl mx-auto text-gray-50 py-4 pr-5">
       <div className="flex flex-col gap-2 max-w-4xl mx-auto">
         {messages.map((itm, index) => (
           <div

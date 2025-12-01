@@ -21,7 +21,7 @@ function App() {
       {/* Main Content */}
       <div className={`flex-grow flex overflow-hidden ${isEmpty ? "items-center justify-center" : "flex-col"}`}>
         {isEmpty ? (
-          <div className="w-full px-4">
+          <div className="w-full px-4 flex flex-col items-center justify-center space-y-12">
             <div className="text-white font-sans text-center space-y-1">
               <h1 className="text-4xl font-semibold">Hello, John 👋</h1>
               <p className="text-lg mb-2">What can I help you with today?</p>
@@ -30,7 +30,7 @@ function App() {
           </div>
         ) : (
           <>
-            <div className="flex-grow overflow-y-auto px-4 py-6 space-y-2 ">
+            <div className="flex-grow overflow-y-auto py-6 space-y-2">
               <ChatSection />
             </div>
             <InputField />

@@ -9,7 +9,8 @@ import UseChat from '../hooks/UseChat';
 export default function Slidebar({ isActive, setIsActive }) {
   const {chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
   const [chatHistory, setChatHistory] = useState([]);
-  
+  const [activeChat, setActiveChat] = useState(null);
+
   useEffect(() => {
     (async () => {
       const res = await fetchChat();
@@ -30,20 +31,25 @@ export default function Slidebar({ isActive, setIsActive }) {
     })();
   }, []);
 
+  // new chat
   function newChat() {
     const chat_id = crypto.randomUUID();
     setActiveChatId(chat_id);
   }
 
+  // existing chat 
   function existingChat(chatId) {
     if (chatId) {
       setActiveChatId(chatId);
     }
   }
 
+  function toggleDelete(chatId) {
+    setActiveChat(activeChat === chatId ? null : chatId);
+  }
   console.log(chatHistoryId)
   return (
-    <aside className={`fixed top-0 left-0 h-screen w-64 bg-zinc-800 transition-transform duration-300 text-white 
+    <aside className={`fixed top-0 left-0 h-screen w-64 bg-zinc-800 transition-transform duration-300 text-white shadow-lg 
       ${isActive ? "translate-x-0" : "-translate-x-full"}`}>
       <div className="flex flex-col gap-3 h-screen">
 
@@ -76,15 +82,15 @@ export default function Slidebar({ isActive, setIsActive }) {
             {chatHistory.map((itm) => (
               <button
                 onClick={() => {
-                  setChatHistoryId(itm.chat_id);
-                  existingChat(itm.chat_id);
-                  setIsActive(false);
+                setChatHistoryId(itm.chat_id);
+                existingChat(itm.chat_id);
+                setIsActive(false);
                 }}
                 key={itm.title}
                 className={`${itm.chat_id === chatHistoryId ? "bg-gray-100/10" : ""}
                 w-full px-2 py-1.5 text-start text-gray-50 rounded-xl
                 hover:bg-gray-100/10 transition-colors duration-150 
-                cursor-pointer truncate max-w-1.5:`}
+                cursor-pointer truncate max-w-[250px]`}
               >
                 {itm.title}
               </button>
