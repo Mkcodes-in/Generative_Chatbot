@@ -46,7 +46,7 @@ export default function ChatProvider({ children }) {
     }, [chatHistoryId]);
 
     return (
-        <ChatContext.Provider value={{ state, activeChatId, setActiveChatId, chatHistoryId, setChatHistoryId }}>
+        <ChatContext.Provider value={{ state, setState, activeChatId, setActiveChatId, chatHistoryId, setChatHistoryId }}>
             {children}
         </ChatContext.Provider>
     )

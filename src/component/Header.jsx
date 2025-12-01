@@ -4,10 +4,19 @@ import { UseTheme } from '../hooks/UseTheme'
 import { LuCircleFadingPlus, LuPanelLeft } from 'react-icons/lu';
 import { useState } from 'react';
 import Slidebar from './Slidebar';
+import UseChat from '../hooks/UseChat';
 
 export default function Header() {
     const { theme, handleTheme } = UseTheme();
     const [isActiveSlide, setIsActiveSlide] = useState(false);
+    const {setState, setActiveChatId} = UseChat();
+    
+    // new chat
+    function newChat() {
+        const chat_id = crypto.randomUUID();
+        setActiveChatId(chat_id);
+        setState([]);
+    }
 
     return (
         <header
@@ -41,6 +50,7 @@ export default function Header() {
                                     size={19}
                                     color='white'
                                     className="transition-all duration-200 hover:opacity-100 opacity-70"
+                                    onClick={() => newChat()}
                                 />
                             </button>
                         </div>
@@ -58,6 +68,7 @@ export default function Header() {
             </nav>
             {/* slideBar */}
             <Slidebar
+                newChat={newChat}
                 isActive={isActiveSlide}
                 setIsActive={setIsActiveSlide}
             />

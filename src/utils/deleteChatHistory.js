@@ -1,8 +1,11 @@
 import { supabase } from "../supabase/supabase";
 
-export function deleteChatHistory(chat_id) {
-    return supabase
-        .from('messages')
+export async function deleteChatHistory(chat_id) {
+    try {
+        await supabase.from("messages")
         .delete()
-        .eq('chat_id', chat_id);
+        .eq("chat_id", chat_id);
+    } catch (error) {
+        console.error("error: ", error);
+    }
 };

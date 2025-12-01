@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import ChatSection from './component/ChatSection';
 import Header from './component/Header';
@@ -11,6 +11,11 @@ function App() {
   const { state } = UseChat();
 
   const isEmpty = state?.length === 0;
+  useEffect(() => {
+    if(isEmpty){
+      
+    }
+  }, []);
 
   return (
     <div className={`max-7xl mx-auto h-screen flex flex-col transition-colors duration-300 ease-in-out justify-center ${theme ? "bg-[#212121]" : "bg-gray-50"}`}>

@@ -5,11 +5,12 @@ import { BsThreeDots } from 'react-icons/bs'
 import Button from './Button';
 import { fetchChat } from '../utils/fetchChat';
 import UseChat from '../hooks/UseChat';
+import { FaTrash } from 'react-icons/fa';
+import { deleteChatHistory } from '../utils/deleteChatHistory';
 
-export default function Slidebar({ isActive, setIsActive }) {
-  const {chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
+export default function Slidebar({ isActive, setIsActive, newChat }) {
+  const { chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
   const [chatHistory, setChatHistory] = useState([]);
-  const [activeChat, setActiveChat] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -28,14 +29,9 @@ export default function Slidebar({ isActive, setIsActive }) {
       });
 
       setChatHistory(unique);
+      newChat();
     })();
   }, []);
-
-  // new chat
-  function newChat() {
-    const chat_id = crypto.randomUUID();
-    setActiveChatId(chat_id);
-  }
 
   // existing chat 
   function existingChat(chatId) {
@@ -44,10 +40,6 @@ export default function Slidebar({ isActive, setIsActive }) {
     }
   }
 
-  function toggleDelete(chatId) {
-    setActiveChat(activeChat === chatId ? null : chatId);
-  }
-  console.log(chatHistoryId)
   return (
     <aside className={`fixed top-0 left-0 h-screen w-64 bg-zinc-800 transition-transform duration-300 text-white shadow-lg 
       ${isActive ? "translate-x-0" : "-translate-x-full"}`}>
@@ -67,7 +59,9 @@ export default function Slidebar({ isActive, setIsActive }) {
               />
             </button>
           </div>
-          <div className='flex items-center justify-center mt-6'>
+          <div
+          onClick={() => setIsActive(false)} 
+          className='flex items-center justify-center mt-6'>
             <Button
               btnLink={newChat}
               btnName={"New chat"}
@@ -78,21 +72,31 @@ export default function Slidebar({ isActive, setIsActive }) {
         {/* History */}
         <div className="flex-grow overflow-auto">
           <h1 className='text-center text-xm text-gray-100/60'>Conversation</h1>
-          <div className='flex flex-col gap-1 px-3 mt-2'>
+
+          <div className="flex flex-col gap-1 px-3 mt-2">
             {chatHistory.map((itm) => (
               <button
                 onClick={() => {
-                setChatHistoryId(itm.chat_id);
-                existingChat(itm.chat_id);
-                setIsActive(false);
+                  setChatHistoryId(itm.chat_id);
+                  existingChat(itm.chat_id);
+                  setIsActive(false);
                 }}
-                key={itm.title}
+                key={itm.chat_id}
                 className={`${itm.chat_id === chatHistoryId ? "bg-gray-100/10" : ""}
+                group flex items-center justify-between
                 w-full px-2 py-1.5 text-start text-gray-50 rounded-xl
-                hover:bg-gray-100/10 transition-colors duration-150 
+                hover:bg-gray-100/10 transition-colors duration-150
                 cursor-pointer truncate max-w-[250px]`}
               >
-                {itm.title}
+                <span className="truncate">{itm.title}</span>
+
+                <FaTrash
+                  onClick={(e) => {
+                    e.stopPropagation(); 
+                    deleteChatHistory(itm.chat_id)
+                  }}
+                  className="hidden group-hover:block text-gray-400 hover:text-red-500 transition-colors"
+                />
               </button>
             ))}
           </div>
