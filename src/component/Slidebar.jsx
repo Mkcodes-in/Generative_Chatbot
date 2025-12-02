@@ -5,8 +5,8 @@ import { BsThreeDots } from 'react-icons/bs'
 import Button from './Button';
 import { fetchChat } from '../utils/fetchChat';
 import UseChat from '../hooks/UseChat';
-import { FaTrash } from 'react-icons/fa';
 import { deleteChatHistory } from '../utils/deleteChatHistory';
+import { MdDeleteForever } from 'react-icons/md';
 
 export default function Slidebar({ isActive, setIsActive, newChat }) {
   const { chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
@@ -60,8 +60,8 @@ export default function Slidebar({ isActive, setIsActive, newChat }) {
             </button>
           </div>
           <div
-          onClick={() => setIsActive(false)} 
-          className='flex items-center justify-center mt-6'>
+            onClick={() => setIsActive(false)}
+            className='flex items-center justify-center mt-6'>
             <Button
               btnLink={newChat}
               btnName={"New chat"}
@@ -82,20 +82,19 @@ export default function Slidebar({ isActive, setIsActive, newChat }) {
                   setIsActive(false);
                 }}
                 key={itm.chat_id}
-                className={`${itm.chat_id === chatHistoryId ? "bg-gray-100/10" : ""}
-                group flex items-center justify-between
-                w-full px-2 py-1.5 text-start text-gray-50 rounded-xl
-                hover:bg-gray-100/10 transition-colors duration-150
-                cursor-pointer truncate max-w-[250px]`}
+                className={`${itm.chat_id === chatHistoryId ? "bg-gray-100/10" : ""} group flex items-center justify-between w-full px-2 py-1.5 text-start text-gray-50 rounded-xl hover:bg-gray-100/10 transition-colors duration-150 cursor-pointer`}
               >
-                <span className="truncate">{itm.title}</span>
+                {/* Title */}
+                <span className="truncate flex-1">{itm.title}</span>
 
-                <FaTrash
+                {/* Delete Icon */}
+                <MdDeleteForever
+                  size={18}
                   onClick={(e) => {
-                    e.stopPropagation(); 
-                    deleteChatHistory(itm.chat_id)
+                    e.stopPropagation();
+                    deleteChatHistory(itm.chat_id);
                   }}
-                  className="hidden group-hover:block text-gray-400 hover:text-red-500 transition-colors"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration- text-red-400 flex-shrink-0 ml-2"
                 />
               </button>
             ))}
