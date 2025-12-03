@@ -9,28 +9,10 @@ import { deleteChatHistory } from '../utils/deleteChatHistory';
 import { MdDeleteForever } from 'react-icons/md';
 
 export default function Slidebar({ isActive, setIsActive, newChat }) {
-  const { chatHistoryId, setActiveChatId, setChatHistoryId } = UseChat();
-  const [chatHistory, setChatHistory] = useState([]);
+  const { chatHistoryId, setActiveChatId, setChatHistoryId, chatHistory } = UseChat();
 
   useEffect(() => {
-    (async () => {
-      const res = await fetchChat();
-      const response = res?.data;
-
-      // remove duplication data 
-      const unique = [];
-      const map = new Map;
-      response.forEach(Element => {
-        if (!Element.message) return;
-        if (!map.has(Element.chat_id)) {
-          map.set(Element.chat_id, Element.message);
-          unique.push({ chat_id: Element.chat_id, title: Element.message });
-        }
-      });
-
-      setChatHistory(unique);
       newChat();
-    })();
   }, []);
 
   // existing chat 
