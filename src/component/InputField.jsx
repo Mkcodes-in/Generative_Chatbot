@@ -7,6 +7,7 @@ import { IoMdClose } from 'react-icons/io';
 import { supabase } from '../supabase/supabase';
 import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
+import { uploadFile } from '../utils/uplaodFile';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -48,17 +49,23 @@ export default function InputField() {
     };
 
     // file upload logic
-    function handleFileChange(e) {
+    async function handleFileChange(e) {
         const selectedFile = e.target.files[0];
-        setFile(selectedFile);
-    }
+        console.log(selectedFile)
+        if(!selectedFile) return;
 
-   
-    // function formateSize(file) {
-    //     if (file < 1024) return file + " Bytes";
-    //     else if (file < 1024 * 1024) return (file / 1024).toFixed(2) + " MB";
-    //     else return (file / (1024 * 1024)).toFixed(2) + " MB";
-    // }
+        try {
+            const response = await uploadFile(selectedFile);
+            if(response.success) {
+                alert("PDF successfully added to knowledge base!")
+            }
+            else{
+                alert("Failed to ingest PDF");
+            }
+        } catch (error) {
+            alert("PDF upload failed: " + error.message);
+        }
+    }
 
     return (
         <div className="w-full bg-transparent px-4">
@@ -89,6 +96,7 @@ export default function InputField() {
                     type="file"
                     id="file"
                     className="hidden"
+                    accept='application/pdf'
                     onChange={handleFileChange}
                 />
 
