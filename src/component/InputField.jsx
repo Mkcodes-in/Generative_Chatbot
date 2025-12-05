@@ -14,7 +14,7 @@ export default function InputField() {
     const textareaRef = useRef(null);
     const { setAiLoader } = UseAiLoader();
     const { activeChatId } = UseChat();
-    const [file, setFile] = useState(null);
+    const fileInputRef = useRef();
 
     // inputField auto re-size
     const handleInputChange = (e) => {
@@ -50,16 +50,20 @@ export default function InputField() {
 
     // file upload logic
     async function handleFileChange(e) {
+        e.preventDefault();    // <<--- GAME CHANGER
+        e.stopPropagation();   // <<--- blocks bubbling
+
+        console.log("HANDLE FILE CHANGE CALLED");
         const selectedFile = e.target.files[0];
         console.log(selectedFile)
-        if(!selectedFile) return;
+        if (!selectedFile) return;
 
         try {
             const response = await uploadFile(selectedFile);
-            if(response.success) {
+            if (response.success) {
                 alert("PDF successfully added to knowledge base!")
             }
-            else{
+            else {
                 alert("Failed to ingest PDF");
             }
         } catch (error) {
@@ -89,14 +93,18 @@ export default function InputField() {
                     className="absolute bottom-2.5 left-2 p-1 rounded-full 
                  hover:bg-gray-50/10 text-white cursor-pointer"
                 >
-                    <GoPlus size={26} />
+                    <GoPlus
+                        size={26}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="cursor-pointer"
+                    />
                 </label>
 
                 <input
                     type="file"
-                    id="file"
+                    ref={fileInputRef}
                     className="hidden"
-                    accept='application/pdf'
+                    accept="application/pdf"
                     onChange={handleFileChange}
                 />
 
