@@ -1,41 +1,29 @@
-import * as pdfjsLib from "pdfjs-dist/webpack";
+import { supabase } from "../supabase/supabase";
 
 export async function uploadFile(file) {
-    if (!file) throw new Error("No file selected");
+  try {
+    console.log("Uploading file:", file);
 
-    // Read file buffer
-    const arrayBuffer = await file.arrayBuffer();
+    const filePath = `files/${Date.now()}_${file.name}`;
 
-    // Load PDF using pdf.js
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const { data, error } = await supabase.storage
+      .from("pdfs")
+      .upload(filePath, file);
 
-    let fullText = "";
-
-    // Extract text from each page
-    for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map((item) => item.str).join(" ");
-        fullText += pageText + "\n";
+    if (error) {
+      console.error("Upload Error:", error);
+      throw error;
     }
 
-    // Send extracted text to Edge Function
-    const res = await fetch(
-        "https://xmxrxqekmlwhpqbypsvm.supabase.co/functions/v1/ingestPdf",
-        {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_API_KEY}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ text: fullText }),
-        }
-    );
+    console.log("Uploaded successfully:", data);
 
-    // 👇 IMPORTANT FIX HERE
-    const data = await res.json();
+    return {
+      success: true,
+      path: filePath
+    };
 
-    console.log("Response from Edge Function:", data);
-
-    return data;
+  } catch (err) {
+    console.error("UPLOAD FAILED:", err);
+    return { success: false, error: err.message };
+  }
 }

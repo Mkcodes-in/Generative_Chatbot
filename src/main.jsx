@@ -6,8 +6,10 @@ import ThemeProvider from './context/ThemeContext.jsx'
 import ChatProvider from './context/ChatContext.jsx'
 import AiLoaderProvider from './context/AiLoader.jsx'
 import PdfProvider from './context/Pdf.jsx'
+import { BrowserRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')).render(
+  <BrowserRouter>
   <PdfProvider>
     <AiLoaderProvider>
       <ChatProvider>
@@ -16,5 +18,6 @@ createRoot(document.getElementById('root')).render(
         </ThemeProvider>
       </ChatProvider>
     </AiLoaderProvider>
-  </PdfProvider>,
+  </PdfProvider>
+  </BrowserRouter>,
 )
