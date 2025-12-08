@@ -35,7 +35,9 @@ export default function App() {
         path="/"
         element={
           <ProtectedRoute session={session}>
-            <Dashboard />
+            <Dashboard 
+            session={session}
+            />
           </ProtectedRoute>
         }
       />

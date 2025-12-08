@@ -5,7 +5,7 @@ import InputField from "../component/InputField";
 import UseChat from "../hooks/UseChat";
 import { UseTheme } from "../hooks/UseTheme";
 
-function Dashboard() {
+function Dashboard({session}) {
   const { theme } = UseTheme();
   const { state } = UseChat();
 
@@ -19,7 +19,9 @@ function Dashboard() {
   return (
     <div className={`max-7xl mx-auto h-screen flex flex-col transition-colors duration-300 ease-in-out justify-center ${theme ? "bg-[#212121]" : "bg-gray-50"}`}>
       {/* Header */}
-      <Header />
+      <Header
+      session={session}
+      />
 
       {/* Main Content */}
       <div className={`flex-grow flex overflow-hidden ${isEmpty ? "items-center justify-center" : "flex-col"}`}>

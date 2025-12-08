@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Slidebar from './Slidebar';
 import UseChat from '../hooks/UseChat';
 
-export default function Header() {
+export default function Header({session}) {
     const { theme, handleTheme } = UseTheme();
     const [isActiveSlide, setIsActiveSlide] = useState(false);
     const {setState, setActiveChatId} = UseChat();
@@ -71,6 +71,7 @@ export default function Header() {
                 newChat={newChat}
                 isActive={isActiveSlide}
                 setIsActive={setIsActiveSlide}
+                session={session}
             />
         </header>
     )
