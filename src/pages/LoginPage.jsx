@@ -13,8 +13,6 @@ const LoginPage = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log("sending:", formData);
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,

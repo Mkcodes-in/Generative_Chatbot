@@ -7,7 +7,7 @@ const model = "llama-3.3-70b-versatile";
 
 export async function sendMsg(activeChatId, setAiLoader) {
   setAiLoader(true);
-
+  const {data: {user}} = await supabase.auth.getUser();
   const { data: dbMessages } = await supabase
     .from("messages")
     .select("*")
@@ -34,7 +34,8 @@ export async function sendMsg(activeChatId, setAiLoader) {
     await supabase.from("messages").insert({
       role: "assistant",
       message: aiResponse,
-      chat_id: activeChatId
+      chat_id: activeChatId, 
+      user_id: user.id
     });
   } catch (error) {
     console.log(error)

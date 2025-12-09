@@ -1,9 +1,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import { BsArrowUp, BsPaperclip } from 'react-icons/bs';
+import { BsArrowUp } from 'react-icons/bs';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
-import { FaFilePdf, FaPlus } from 'react-icons/fa';
-import { IoMdClose } from 'react-icons/io';
 import { supabase } from '../supabase/supabase';
 import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
@@ -27,8 +25,8 @@ export default function InputField() {
     const handleSubmit = async () => {
         if (!message.trim()) return;
         if (!activeChatId) return console.error("No active chat ID found.");
-
-        const userMsg = { role: "user", message: message, "chat_id": activeChatId };
+        const {data: {user}} = await supabase.auth.getUser();
+        const userMsg = { role: "user", message: message, "chat_id": activeChatId, "user_id": user.id };
 
         try {
             await supabase.from("messages").insert(userMsg);

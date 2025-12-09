@@ -14,7 +14,7 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
   const [isActiveLog, setIsActiveLog] = useState(false);
   const logRef = useRef(null);
 
-  const userSession = session.user.email;
+  const userSession = session?.user?.email;
   useEffect(() => {
     newChat();
   }, []);
