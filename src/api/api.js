@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
 import { supabase } from "../supabase/supabase";
+import { systemPrompt } from "./systemContext";
 
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
@@ -22,30 +23,13 @@ export async function sendMsg(activeChatId, setAiLoader) {
 
     const userMessage = msgs?.[0]?.message;
 
-    // get file_path from chats table
-    const { data: chatRow } = await supabase
-      .from("chats")
-      .select("file_path")
-      .eq("id", activeChatId)
-      .single();
-
-    const filePath = chatRow.file_path;
-
-    // Vector Search → Get PDF chunks
-    const { data: chunks } = await supabase.rpc("match_documents", {
-      query: userMessage,
-      file_path: filePath,
-    });
-
-    const context = chunks.map(c => c.content).join("\n\n");
-
-    // Send to Groq with PDF context
+    // LLM context with chatHistory
     const completion = await groq.chat.completions.create({
       model,
       messages: [
         {
-          role: "system",
-          content: `Use the following PDF context to answer:\n\n${context}`
+          role: systemPrompt.role,
+          content: systemPrompt.content
         },
         {
           role: "user",
@@ -65,8 +49,27 @@ export async function sendMsg(activeChatId, setAiLoader) {
     });
 
   } catch (error) {
-    console.error("sendMsg error →", error);
+    console.error("sendMsg error", error);
   } finally {
     setAiLoader(false);
   }
 }
+
+// // get file_path from chats table
+// const { data: chatRow } = await supabase
+//   .from("chats")
+//   .select("file_path")
+//   .eq("id", activeChatId)
+//   .single();
+
+// const filePath = chatRow.file_path;
+
+// // Vector Search → Get PDF chunks
+// const { data: chunks } = await supabase.rpc("match_documents", {
+//   query: userMessage,
+//   file_path: filePath,
+// });
+
+// const context = chunks.map(c => c.content).join("\n\n");
+
+// Send to Groq with PDF context
