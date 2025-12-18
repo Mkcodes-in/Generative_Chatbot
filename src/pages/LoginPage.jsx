@@ -1,110 +1,79 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import logo from '../assets/logo.png';
 import { supabase } from '../supabase/supabase';
-import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
-  const navigate = useNavigate();
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
-
+  async function handleLoginWithGoogle() {
+    const { error, data } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    })
+    console.log(data)
     if (error) {
-      console.error(error);
-      alert(error.message);
-      return;
+      console.error('Google login error:', error)
     }
-    console.log("LOGIN SUCCESS:", data.user);
-    navigate("/");
-    setFormData({email: "", password: ""});
   }
 
-
-  function handleForm(e) {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   return (
-    <div className="min-h-screen bg-[#212121] flex items-center justify-center p-4">
-      <div className="bg-zinc-800/50 rounded-xl shadow-xl p-8 w-full max-w-sm border border-gray-100/10">
-
-        {/* Header with Logo */}
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center mx-auto mb-4 p-2">
-            <img
-              src={logo}
-              alt="Logo"
-              className="w-full h-full object-contain"
-            />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+      <div className="relative bg-zinc-900/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md border border-zinc-700/50">
+        <div className="relative z-10">
+          {/* Logo & Header */}
+          <div className="text-center mb-10">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-zinc-700/50 flex items-center justify-center mx-auto mb-6 p-3 shadow-lg">
+              <img
+                src={logo}
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2">
+              Welcome
+            </h1>
+            <p className="text-gray-400 text-lg">Sign in to continue to your account</p>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Sign In</h1>
-          <p className="text-gray-400">Continue with Google</p>
-        </div>
 
-        {/* Google Button */}
-        <button
-          onClick={() => console.log("first")}
-          className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-gray-800 border border-gray-50/20 rounded-full hover:bg-gray-800/30 hover:shadow-md hover:shadow-black/20 transition-all duration-200 cursor-pointer"
-        >
-          <FcGoogle className="w-5 h-5" />
-          <span className="text-gray-300 font-medium">Sign in with Google</span>
-        </button>
-
-        <div className='border-t border-gray-700 py-2 mt-6'></div>
-
-        {/* input fields */}
-        <form
-          onSubmit={handleSubmit}
-          className='flex flex-col gap-2'>
-          <div className='flex flex-col'>
-            <label
-              className='text-md text-gray-50 font-light mb-1'
-              htmlFor="email">Email address</label>
-            <input
-              onChange={handleForm}
-              className='rounded-full border-gray-50/50 border py-2 px-2 text-white'
-              id='email'
-              name='email'
-              required
-              value={formData.email}
-              type="email" />
+          {/* Google Sign In Button */}
+          <div className="space-y-6">
+            <button
+              onClick={handleLoginWithGoogle}
+              className="w-full group relative flex items-center justify-center gap-4 px-2 py-3 border border-zinc-700 rounded-xl cursor-pointer shadow-lg hover:shadow-xl hover:bg-gray-500/10 transition-all ease-in duration-300"
+            >
+              <FcGoogle className="w-6 h-6 relative z-10" />
+              <span className="text-gray-200 font-semibold text-lg relative z-10">
+                Continue with Google
+              </span>
+              <div className="absolute right-6 top-1/2 -translate-y-1/2">
+              </div>
+            </button>
           </div>
-          <div className='flex flex-col mb-3'>
-            <label
-              className='text-md text-gray-50 font-light mb-1'
-              htmlFor="password">Your Password</label>
-            <input
-              onChange={handleForm}
-              className='rounded-full border-gray-50/50 border py-2 px-2 text-white'
-              id='password'
-              name='password'
-              required
-              value={formData.password}
-              type="text" />
-          </div>
-          <button className='py-2 rounded-full bg-amber-700 text-md text-gray-50 cursor-pointer'>Sign in</button>
-        </form>
 
-        {/* Footer */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-400">
-            By signing in, you agree to our{' '}
-            <a href="#" className="text-blue-500 hover:text-blue-400">Terms</a> and{' '}
-            <a href="#" className="text-blue-500 hover:text-blue-400">Privacy Policy</a>
-          </p>
+          {/* Footer */}
+          <div className="mt-10 pt-6 border-t border-zinc-700/50 text-center">
+            <p className="text-sm text-gray-400">
+              By continuing, you agree to our{' '}
+              <a href="#" className="text-blue-400 hover:text-blue-300 font-medium hover:underline transition-colors">
+                Terms of Service
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text-blue-400 hover:text-blue-300 font-medium hover:underline transition-colors">
+                Privacy Policy
+              </a>
+            </p>
+
+            <div className="mt-4">
+              <p className="text-xs text-gray-500">
+                Need help?{' '}
+                <a href="#" className="text-gray-400 hover:text-gray-300">
+                  Contact Support
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
