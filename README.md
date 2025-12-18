@@ -1,1 +1,1 @@
-RAG Base ChatBot LangChain
+RAG Base ChatBot
