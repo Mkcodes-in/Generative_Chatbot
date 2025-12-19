@@ -6,42 +6,44 @@ import { supabase } from '../supabase/supabase';
 const LoginPage = () => {
 
   async function handleLoginWithGoogle() {
-    const { error, data } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin
+    try {
+      const { error, data } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+        redirectTo: "http://localhost:5173"
       }
-    })
-    console.log(data)
-    if (error) {
-      console.error('Google login error:', error)
+      })
+      console.log(data);
+      if (error) throw error;
+    } catch (error) {
+      console.error(error?.message);
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#212121] flex items-center justify-center p-4">
       <div className="relative bg-zinc-900/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md border border-zinc-700/50">
         <div className="relative z-10">
           {/* Logo & Header */}
           <div className="text-center mb-10">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-zinc-700/50 flex items-center justify-center mx-auto mb-6 p-3 shadow-lg">
+            <div className="w-15 h-15 rounded-full bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-zinc-700/50 flex items-center justify-center mx-auto mb-6 p-3 shadow-lg">
               <img
                 src={logo}
                 alt="Logo"
                 className="w-full h-full object-contain"
               />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2">
               Welcome
             </h1>
-            <p className="text-gray-400 text-lg">Sign in to continue to your account</p>
+            <p className="text-gray-400 text-md">Sign in to continue to your account</p>
           </div>
 
           {/* Google Sign In Button */}
           <div className="space-y-6">
             <button
               onClick={handleLoginWithGoogle}
-              className="w-full group relative flex items-center justify-center gap-4 px-2 py-3 border border-zinc-700 rounded-xl cursor-pointer shadow-lg hover:shadow-xl hover:bg-gray-500/10 transition-all ease-in duration-300"
+              className="w-full group relative flex items-center justify-center gap-4 px-2 py-3 border border-zinc-700 rounded-full cursor-pointer shadow-lg hover:shadow-xl hover:bg-gray-500/10 transition-all ease-in duration-300"
             >
               <FcGoogle className="w-6 h-6 relative z-10" />
               <span className="text-gray-200 font-semibold text-lg relative z-10">

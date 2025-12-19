@@ -7,10 +7,8 @@ import { UseTheme } from "../hooks/UseTheme";
 function Dashboard({session}) {
   const { theme } = UseTheme();
   const { state } = UseChat();
-  const email = session?.user?.email;
-  const userSession = email?.split("@")[0];
   const isEmpty = state?.length === 0;
-
+  
   return (
     <div className={`max-7xl mx-auto h-screen flex flex-col transition-colors duration-300 ease-in-out justify-center ${theme ? "bg-[#212121]" : "bg-gray-50"}`}>
       {/* Header */}
@@ -23,7 +21,7 @@ function Dashboard({session}) {
         {isEmpty ? (
           <div className="w-full px-4 flex flex-col items-center justify-center space-y-8">
             <div className="text-white font-sans text-center space-y-2">
-              <h1 className="text-4xl font-semibold">Hello, {userSession} 👋</h1>
+              <h1 className="text-4xl font-semibold">Hello, {session.user.user_metadata.name  } 👋</h1>
               <p className="text-lg mb-2">What can I help you with today?</p>
             </div>
             <InputField />

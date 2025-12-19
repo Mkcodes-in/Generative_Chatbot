@@ -27,8 +27,8 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
   }
 
   useEffect(() => {
-    function handleClickOutSide(e){
-      if(logRef.current && !logRef.current.contains(e.target)){
+    function handleClickOutSide(e) {
+      if (logRef.current && !logRef.current.contains(e.target)) {
         setIsActiveLog(false);
       }
     }
@@ -38,10 +38,10 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
     return () => document.removeEventListener("mousedown", handleClickOutSide);
   }, []);
 
-  async function logOut(){
+  async function logOut() {
     try {
       const { error } = await supabase.auth.signOut();
-      if(error) throw error;
+      if (error) throw error;
     } catch (error) {
       console.error("error: ", error);
     }
@@ -111,17 +111,19 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
         {/* Footer / Profile */}
         <div
           onClick={() => setIsActiveLog(!isActiveLog)}
-          className="relative mt-auto w-full px-2 py-1 border-t-1 border-gray-50/13">
+          className="relative mt-auto w-full px-2 py-1 border-gray-50/13">
           <button className="flex w-full items-center justify-between cursor-pointer px-3 py-2 rounded-full text-sm">
-            {userSession} <BsThreeDots />
+            <span className='flex items-center gap-2'>
+              <img className='h-8 w-8 object-cover rounded-full' src={session.user.user_metadata.picture} alt='profile' />{session.user.user_metadata.name}</span>
+            <BsThreeDots />
           </button>
         </div>
 
         {/* Logout */}
         {isActiveLog && (
           <div
-          ref={logRef} 
-          className="absolute bottom-8 w-full px-4">
+            ref={logRef}
+            className="absolute bottom-8 w-full px-4">
             <button
               onClick={logOut}
               className="
@@ -131,7 +133,7 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
               hover:bg-white/20 transition-all duration-200
               "
             >
-             <BiExit /><span className="text-md font-medium">Logout</span>
+              <BiExit /><span className="text-md font-medium">Logout</span>
             </button>
           </div>
         )}
