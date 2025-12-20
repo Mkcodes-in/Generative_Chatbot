@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
+import React, { useRef, useState } from 'react';
 import { BsArrowUp } from 'react-icons/bs';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
@@ -7,7 +7,7 @@ import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
 import { uploadFile } from '../utils/uplaodFile';
 
-export default function InputField() {
+export default function InputField({ session }) {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
     const { setAiLoader } = UseAiLoader();
@@ -25,7 +25,7 @@ export default function InputField() {
     const handleSubmit = async () => {
         if (!message.trim()) return;
         if (!activeChatId) return console.error("No active chat ID found.");
-        const {data: {user}} = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         const userMsg = { role: "user", message: message, "chat_id": activeChatId, "user_id": user.id };
 
         try {
@@ -48,21 +48,16 @@ export default function InputField() {
 
     // file upload logic
     async function handleFileChange(e) {
-        e.preventDefault();    // <<--- GAME CHANGER
-        e.stopPropagation();   // <<--- blocks bubbling
-
-        console.log("HANDLE FILE CHANGE CALLED");
         const selectedFile = e.target.files[0];
         console.log(selectedFile)
         if (!selectedFile) return;
-
         try {
-            const response = await uploadFile(selectedFile);
-            if (response.success) {
-                alert("PDF successfully added to knowledge base!")
-            }
-            else {
+            const response = await uploadFile(selectedFile, session);
+            if (response?.ok) {
+                alert("PDF successfully added to knowledge base!");
+            } else {
                 alert("Failed to ingest PDF");
+                console.log("FAILED RESPONSE:", response);
             }
         } catch (error) {
             alert("PDF upload failed: " + error.message);

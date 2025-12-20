@@ -7,13 +7,12 @@ const LoginPage = () => {
 
   async function handleLoginWithGoogle() {
     try {
-      const { error, data } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
         redirectTo: "http://localhost:5173"
       }
       })
-      console.log(data);
       if (error) throw error;
     } catch (error) {
       console.error(error?.message);

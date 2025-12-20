@@ -1,24 +1,26 @@
-import { supabase } from "../supabase/supabase";
+import { pdfParsing } from "../parse/PdfParsing";
 
-export async function uploadFile(file) {
-  // Upload file to Supabase
-  const filePath = `files/${Date.now()}_${file.name}`;
+export async function uploadFile(file, session) {
+  try {
+    const text = await pdfParsing(file);
+    const res = await fetch(
+      "https://xmxrxqekmlwhpqbypsvm.supabase.co/functions/v1/pdf-endpoint",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`, 
+        },
+        body: JSON.stringify({ text }),
+      }
+    );
 
-  const { data, error } = await supabase.storage
-    .from("pdfs")
-    .upload(filePath, file);
+    const data = await res.json();
+    console.log("EDGE RESPONSE:", data);
+    return data;
 
-  if (error) {
-    console.error(error);
-    return;
+  } catch (err) {
+    console.error("UPLOAD ERROR:", err);
+    return { ok: false, error: err.message };
   }
-
-  // Call ingestPdf Edge Function
-  await fetch("https://xmxrxqekmlwhpqbypsvm.supabase.co/functions/v1/ingestPdf", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ filePath: data.path }), 
-  });
-
-  console.log("PDF processed & embedded successfully!");
 }

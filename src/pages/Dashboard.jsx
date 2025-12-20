@@ -24,7 +24,9 @@ function Dashboard({session}) {
               <h1 className="text-4xl font-semibold">Hello, {session.user.user_metadata.name  } 👋</h1>
               <p className="text-lg mb-2">What can I help you with today?</p>
             </div>
-            <InputField />
+            <InputField 
+            session={session}
+            />
           </div>
         ) : (
           <>
