@@ -2,6 +2,7 @@ import React from 'react'
 import UseAiLoader from '../hooks/UseAiLoader';
 import { marked } from 'marked';
 import UseChat from '../hooks/UseChat';
+import '../component/style/Response.css'
 
 export default function ChatSection() {
   const { aiLoader } = UseAiLoader();
@@ -22,6 +23,7 @@ export default function ChatSection() {
             >
               {itm.role === "assistant" ? (
                 <div
+                  className='markdown'
                   dangerouslySetInnerHTML={{
                     __html: marked((itm.content ?? itm.message) || '', {
                       gfm: true,

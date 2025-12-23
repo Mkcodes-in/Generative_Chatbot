@@ -16,9 +16,8 @@ export async function pdfParsing(file) {
     let pageText = "";
 
     for (const item of content.items) {
-      pageText += item.str;
+      pageText += item.str.trim();
 
-      // line break detect
       if (item.hasEOL) {
         pageText += "\n";
       } else {

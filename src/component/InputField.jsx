@@ -52,7 +52,7 @@ export default function InputField({ session }) {
         console.log(selectedFile)
         if (!selectedFile) return;
         try {
-            const response = await uploadFile(selectedFile, session);
+            const response = await uploadFile(selectedFile);
             if (response?.ok) {
                 alert("PDF successfully added to knowledge base!");
             } else {

@@ -18,6 +18,7 @@ export default function Header({session}) {
         setState([]);
     }
 
+    console.log(session)
     return (
         <header
             className={`z-40 transition-all duration-300 ease-in-out backdrop-blur-sm 

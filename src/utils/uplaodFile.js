@@ -1,10 +1,11 @@
 import { pdfParsing } from "../parse/PdfParsing";
+import { supabase } from "../supabase/supabase";
+const session = await supabase.auth.getSession();
 
-export async function uploadFile(file, session) {
+export async function uploadFile(file) {
   try {
     const text = await pdfParsing(file);
-    const res = await fetch(
-      "https://xmxrxqekmlwhpqbypsvm.supabase.co/functions/v1/pdf-endpoint",
+    const res = await fetch(import.meta.env.VITE_SUPABASE_EDGE_FUNCTION,
       {
         method: "POST",
         headers: {

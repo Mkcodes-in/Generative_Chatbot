@@ -54,22 +54,3 @@ export async function sendMsg(activeChatId, setAiLoader) {
     setAiLoader(false);
   }
 }
-
-// // get file_path from chats table
-// const { data: chatRow } = await supabase
-//   .from("chats")
-//   .select("file_path")
-//   .eq("id", activeChatId)
-//   .single();
-
-// const filePath = chatRow.file_path;
-
-// // Vector Search → Get PDF chunks
-// const { data: chunks } = await supabase.rpc("match_documents", {
-//   query: userMessage,
-//   file_path: filePath,
-// });
-
-// const context = chunks.map(c => c.content).join("\n\n");
-
-// Send to Groq with PDF context

@@ -6,7 +6,6 @@ import NotFound from './pages/NotFound';
 import { supabase } from './supabase/supabase';
 import ProtectedRoute from './component/ProtectedRoute';
 import Loader from './component/Loader';
-import { PiFunctionThin } from 'react-icons/pi';
 
 export default function App() {
   const [session, setSession] = useState(null);

@@ -14,7 +14,8 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
   const [isActiveLog, setIsActiveLog] = useState(false);
   const logRef = useRef(null);
 
-  const userSession = session?.user?.email;
+  const profilePicture = session?.user?.user_metadata?.picture;
+  const userEmail = session?.user?.user_metadata?.email;
   useEffect(() => {
     newChat();
   }, []);
@@ -114,7 +115,7 @@ export default function Slidebar({ isActive, setIsActive, newChat, session }) {
           className="relative mt-auto w-full px-2 py-1 border-gray-50/13">
           <button className="flex w-full items-center justify-between cursor-pointer px-3 py-2 rounded-full text-sm">
             <span className='flex items-center gap-2'>
-              <img className='h-8 w-8 object-cover rounded-full' src={session.user.user_metadata.picture} alt='profile' />{session.user.user_metadata.name}</span>
+              <img className='h-8 w-8 object-cover rounded-full' src={profilePicture} alt='profile' />{userEmail}</span>
             <BsThreeDots />
           </button>
         </div>
