@@ -21,7 +21,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-[#212121] flex items-center justify-center p-4">
-      <div className="relative bg-zinc-900/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-md border border-zinc-700/50">
+      <div className="relative bg-zinc-900/80 rounded-2xl p-8 w-full max-w-md border border-zinc-700/50">
         <div className="relative z-10">
           {/* Logo & Header */}
           <div className="text-center mb-10">

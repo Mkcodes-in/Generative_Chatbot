@@ -2,6 +2,8 @@
   font-size: 15px;
   line-height: 1.7;
   color: #e5e7eb;
+  width: 100%;
+  word-break: break-word;
 }
 
 .markdown h2 {
