@@ -6,7 +6,7 @@ import { supabase } from '../supabase/supabase';
 import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
 import { uploadFile } from '../utils/uplaodFile';
-import { BiLoaderCircle, BiX } from 'react-icons/bi';
+import { BiX } from 'react-icons/bi';
 import Loader from './Loader';
 import { LuLoader } from 'react-icons/lu';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
