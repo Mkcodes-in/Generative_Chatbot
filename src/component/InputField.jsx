@@ -1,18 +1,24 @@
 import React, { useRef, useState } from 'react';
-import { BsArrowUp } from 'react-icons/bs';
+import { BsArrowUp, BsFileEarmarkPdfFill } from 'react-icons/bs';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
 import { supabase } from '../supabase/supabase';
 import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
 import { uploadFile } from '../utils/uplaodFile';
+import { BiLoaderCircle, BiX } from 'react-icons/bi';
+import Loader from './Loader';
+import { LuLoader } from 'react-icons/lu';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-export default function InputField({ session }) {
+export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
     const { setAiLoader } = UseAiLoader();
     const { activeChatId } = UseChat();
     const fileInputRef = useRef();
+    const [uploading, setUploading] = useState(false);
+    const [fileName, setFileName] = useState(null);
 
     // inputField auto re-size
     const handleInputChange = (e) => {
@@ -51,24 +57,71 @@ export default function InputField({ session }) {
         const selectedFile = e.target.files[0];
         console.log(selectedFile)
         if (!selectedFile) return;
+
+        setUploading(true);
+        setFileName({
+            name: selectedFile.name,
+            type: selectedFile.type
+        });
+
         try {
             const response = await uploadFile(selectedFile);
             if (response?.ok) {
-                alert("PDF successfully added to knowledge base!");
+                console.log("PDF successfully added to knowledge base!");
             } else {
                 alert("Failed to ingest PDF");
                 console.log("FAILED RESPONSE:", response);
             }
         } catch (error) {
             alert("PDF upload failed: " + error.message);
+            setUploading(null);
+        } finally {
+            setUploading(false);
         }
     }
 
     return (
         <div className="w-full bg-transparent px-4">
             <div
-                className={`relative bottom-5 bg-[#303030] text-white shadow-lg w-full max-w-3xl mx-auto z-30 py-3 overflow-hidden transition-all duration-100 ${message ? "rounded-3xl pb-12 px-4" : "rounded-full px-12"}`}
+                className={`relative bottom-5 bg-[#303030] text-white shadow-lg w-full max-w-3xl mx-auto z-30 py-3 overflow-hidden transition-all duration-100 ${message || fileName ? "rounded-3xl pb-12 px-4" : "rounded-full px-13"}`}
             >
+                {/* uploading */}
+                {fileName && (
+                    <div className="flex items-center justify-between bg-gray-50/10 border border-gray-700/50 mb-3 px-4 py-3 rounded-lg">
+                        <div className="flex items-center gap-3">
+                            <div className="relative w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                                <BsFileEarmarkPdfFill />
+                            </div>
+
+                            {/* File details */}
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-white">
+                                        {fileName.name}
+                                    </span>
+                                    {uploading && (
+                                        <div className='absolute left-8 top-6'>
+                                            <AiOutlineLoading3Quarters size={41} className='animate-spin' />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right side - Remove button */}
+                        <button
+                            onClick={() => {
+                                if (fileInputRef.current) fileInputRef.current.value = '';
+                                setFileName(null);
+                            }}
+                            className="p-1.5 hover:bg-gray-100/10 rounded-full text-gray-400 hover:text-white transition-colors cursor-pointer"
+                            aria-label="Remove file"
+                        >
+                            <BiX size={20} />
+                        </button>
+                    </div>
+                )}
+
                 <textarea
                     ref={textareaRef}
                     value={message}
