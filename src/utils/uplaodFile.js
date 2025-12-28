@@ -1,9 +1,10 @@
 import { chunkingText } from "../helper/chunking";
 import { pdfParsing } from "../parse/PdfParsing";
 import { supabase } from "../supabase/supabase";
-const session = await supabase.auth.getSession();
 
-export async function uploadFile(file) {
+export async function uploadFile(file, activeChatId) {
+  const session = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
   try {
     const text = await pdfParsing(file);
     const chunks = chunkingText(text);
@@ -15,7 +16,11 @@ export async function uploadFile(file) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.data.session.access_token}`,
         },
-        body: JSON.stringify({ text: chunk }),
+        body: JSON.stringify({
+          text: chunk,
+          chat_id: activeChatId,
+          user_id: user.id
+        }),
       });
     }
 

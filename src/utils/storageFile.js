@@ -2,26 +2,30 @@ import { supabase } from "../supabase/supabase";
 
 // uplaod file logic to upload 
 export const handleUpload = async (fileToUpload, activeChatId) => {
-    if (!fileToUpload || !activeChatId) {
-        console.warn("Missing file or chat ID for upload");
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!fileToUpload) return;
+
+    const filePath = `${activeChatId}/${fileToUpload.name}`
+
+    // Upload to storage
+    const { error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(filePath, fileToUpload)
+
+    if (uploadError) {
+        console.error(uploadError.message)
         return;
     }
 
-    try {
-        const filePath = `${activeChatId}/${fileToUpload.name}`;
-        const { error, data } = await supabase.storage
-            .from('documents')
-            .upload(filePath, fileToUpload);
-
-        if (error) {
-            console.error("Supabase upload error:", error);
-            throw new Error(error.message || "Upload failed");
-        }
-
-        console.log("File uploaded successfully:", data);
-        return { success: true, data };
-    } catch (error) {
-        console.error("Upload error:", error);
-        throw error;
-    }
+    // // insert into userchat
+    // const { error } = supabase.from('messages').insert({
+    //     role: 'user',
+    //     message: `[pdf] ${filePath}`,
+    //     chai_id: activeChatId,
+    //     user_id: user.id
+    // })
+    // if(error){
+    //     console.error(error);
+    // }
 }

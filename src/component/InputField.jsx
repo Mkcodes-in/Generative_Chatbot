@@ -79,7 +79,7 @@ export default function InputField() {
         });
 
         try {
-            const response = await uploadFile(selectedFile);
+            const response = await uploadFile(selectedFile, activeChatId);
             if (response?.ok) {
                 console.log("PDF successfully added to knowledge base!");
             } else {
