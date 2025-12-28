@@ -7,9 +7,8 @@ import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
 import { uploadFile } from '../utils/uplaodFile';
 import { BiX } from 'react-icons/bi';
-import Loader from './Loader';
-import { LuLoader } from 'react-icons/lu';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { handleUpload } from '../utils/storageFile';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -19,6 +18,7 @@ export default function InputField() {
     const fileInputRef = useRef();
     const [uploading, setUploading] = useState(false);
     const [fileName, setFileName] = useState(null);
+    const [file, setFile] = useState(null);
 
     // inputField auto re-size
     const handleInputChange = (e) => {
@@ -40,9 +40,22 @@ export default function InputField() {
             console.error("Error ", error);
         }
 
+        // Upload file function call 
+        if (file) {
+            try {
+                await handleUpload(file, activeChatId);
+            } catch (error) {
+                console.error("File upload error:", error);
+                alert("File upload failed: " + error.message);
+            }
+        }
+
         sendMsg(activeChatId, setAiLoader);
 
         setMessage('');
+        setFile(null);
+        setFileName(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     const handleKeyPress = (e) => {
@@ -55,7 +68,8 @@ export default function InputField() {
     // file upload logic
     async function handleFileChange(e) {
         const selectedFile = e.target.files[0];
-        console.log(selectedFile)
+        setFile(selectedFile);
+        // console.log(selectedFile)
         if (!selectedFile) return;
 
         setUploading(true);
