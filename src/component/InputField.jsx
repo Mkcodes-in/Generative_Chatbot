@@ -9,6 +9,7 @@ import { uploadFile } from '../utils/uplaodFile';
 import { BiX } from 'react-icons/bi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { handleUpload } from '../utils/storageFile';
+import { needsPdfSearch } from '../utils/needPdfSearch';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -31,8 +32,15 @@ export default function InputField() {
     const handleSubmit = async () => {
         if (!message.trim()) return;
         if (!activeChatId) return console.error("No active chat ID found.");
+
         const { data: { user } } = await supabase.auth.getUser();
-        const userMsg = { role: "user", message: message, "chat_id": activeChatId, "user_id": user.id };
+
+        const userMsg = {
+            role: "user",
+            message: message,
+            chat_id: activeChatId,
+            user_id: user.id
+        };
 
         try {
             await supabase.from("messages").insert(userMsg);
@@ -40,7 +48,6 @@ export default function InputField() {
             console.error("Error ", error);
         }
 
-        // Upload file function call 
         if (file) {
             try {
                 await handleUpload(file, activeChatId);
@@ -50,13 +57,20 @@ export default function InputField() {
             }
         }
 
-        sendMsg(activeChatId, setAiLoader);
+        if (needsPdfSearch(message)) {
+            // 👉 PDF related question → RAG
+            sendMsg(activeChatId, setAiLoader);
+        } else {
+            // 👉 Normal chat → simple AI
+            normalChat(message, activeChatId);
+        }
 
         setMessage('');
         setFile(null);
         setFileName(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
+
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
