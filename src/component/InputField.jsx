@@ -10,6 +10,7 @@ import { BiX } from 'react-icons/bi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { handleUpload } from '../utils/storageFile';
 import { needsPdfSearch } from '../utils/needPdfSearch';
+import { question_embedding } from '../api/embedding';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -57,12 +58,11 @@ export default function InputField() {
             }
         }
 
+        // PDF related question → RAG
         if (needsPdfSearch(message)) {
-            // 👉 PDF related question → RAG
-            sendMsg(activeChatId, setAiLoader);
+            question_embedding(message, activeChatId, user.id);
         } else {
-            // 👉 Normal chat → simple AI
-            normalChat(message, activeChatId);
+            sendMsg(activeChatId, setAiLoader);
         }
 
         setMessage('');
