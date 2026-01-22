@@ -6,9 +6,7 @@ const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
 const model = "llama-3.3-70b-versatile";
 
-export async function sendMsg(activeChatId, setAiLoader) {
-  setAiLoader(true);
-
+export async function sendMsg(activeChatId) {
   try {
     // get user
     const { data: { user } } = await supabase.auth.getUser();
@@ -50,7 +48,5 @@ export async function sendMsg(activeChatId, setAiLoader) {
 
   } catch (error) {
     console.error("sendMsg error", error);
-  } finally {
-    setAiLoader(false);
   }
 }

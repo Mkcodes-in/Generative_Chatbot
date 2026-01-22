@@ -15,13 +15,13 @@ import { question_embedding } from '../api/embedding';
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
-    const { setAiLoader } = UseAiLoader();
+    const { setAiLoader, setThinking } = UseAiLoader();
     const { activeChatId } = UseChat();
     const fileInputRef = useRef();
     const [uploading, setUploading] = useState(false);
     const [fileName, setFileName] = useState(null);
     const [file, setFile] = useState(null);
-
+    
     // inputField auto re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);
@@ -40,7 +40,9 @@ export default function InputField() {
             role: "user",
             message: message,
             chat_id: activeChatId,
-            user_id: user.id
+            user_id: user.id,
+            file_name: file ? fileName.name : null,
+            file_type: file ? fileName.type : null
         };
 
         try {
@@ -59,10 +61,19 @@ export default function InputField() {
         }
 
         // PDF related question → RAG
-        if (needsPdfSearch(message)) {
-            question_embedding(message, activeChatId, user.id);
-        } else {
-            sendMsg(activeChatId, setAiLoader);
+        try {
+            if (needsPdfSearch(message)) {
+                setThinking(true);
+                await question_embedding(message, activeChatId, user.id);
+            } else {
+                setAiLoader(true);
+                await sendMsg(activeChatId);
+            }
+        } catch (error) {
+            console.error('error: ', error);
+        } finally {
+            setAiLoader(false);
+            setThinking(false);
         }
 
         setMessage('');
@@ -136,7 +147,7 @@ export default function InputField() {
                             </div>
                         </div>
 
-                        {/* Right side - Remove button */}
+                        {/* Right side */}
                         <button
                             onClick={() => {
                                 if (fileInputRef.current) fileInputRef.current.value = '';
