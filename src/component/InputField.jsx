@@ -35,7 +35,7 @@ export default function InputField() {
         if (!activeChatId) return console.error("No active chat ID found.");
 
         const { data: { user } } = await supabase.auth.getUser();
-
+        console.log(user)
         const userMsg = {
             role: "user",
             message: message,

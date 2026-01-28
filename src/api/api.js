@@ -10,7 +10,7 @@ export async function sendMsg(activeChatId) {
   try {
     // get user
     const { data: { user } } = await supabase.auth.getUser();
-
+    console.log(user)
     // get last user message
     const { data: msgs } = await supabase
       .from("messages")

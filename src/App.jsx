@@ -10,20 +10,25 @@ import Loader from './component/Loader';
 export default function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  console.log(session)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    const getSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error: ', error);
+        return;
+      }
       setSession(data.session);
       setLoading(false);
-    });
+    }
+    getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-      }
-    );
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => { setSession(session) });
 
-    return () => authListener.subscription.unsubscribe();
+    return () => {
+      authListener.subscription.unsubscribe();
+    }
   }, []);
 
   if (loading) {
