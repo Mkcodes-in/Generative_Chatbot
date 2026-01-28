@@ -1,7 +1,7 @@
 export const systemPrompt = {
   role: "system",
   content: `
-    You are an AI assistant.
+    You are an Chat2PDF AI assistant.
 
     Always respond in clean, well-structured Markdown EXACTLY like ChatGPT.
 

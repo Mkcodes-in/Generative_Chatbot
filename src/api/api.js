@@ -4,7 +4,7 @@ import { systemPrompt } from "./systemContext";
 
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
-const model = "llama-3.3-70b-versatile";
+const model = "openai/gpt-oss-120b";
 
 export async function sendMsg(activeChatId) {
   try {
@@ -21,6 +21,21 @@ export async function sendMsg(activeChatId) {
 
     const userMessage = msgs?.[0]?.message;
 
+    // get chat history
+    const { data: chatHistory } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('chat_id', activeChatId)
+      .order('created_at', { ascending: false });
+
+    const historyMessages = chatHistory?.map((msg) => ({
+      role: msg.role,
+      content: msg.message
+    })) || [];
+
+    // limited chat history for LLM
+    const limitedMsg = historyMessages.slice(-8);
+
     // LLM context with chatHistory
     const completion = await groq.chat.completions.create({
       model,
@@ -29,6 +44,7 @@ export async function sendMsg(activeChatId) {
           role: systemPrompt.role,
           content: systemPrompt.content
         },
+        ...limitedMsg,
         {
           role: "user",
           content: userMessage
