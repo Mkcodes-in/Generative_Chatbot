@@ -1,1 +1,1 @@
-RAG Base ChatBot.
+Complete CHATBOT with RAG not supported OCR images. 
