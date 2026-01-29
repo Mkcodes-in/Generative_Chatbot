@@ -10,7 +10,6 @@ import Loader from './component/Loader';
 export default function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(session)
 
   useEffect(() => {
     const getSession = async () => {

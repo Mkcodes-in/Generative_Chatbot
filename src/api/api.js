@@ -1,16 +1,14 @@
 import Groq from "groq-sdk";
 import { supabase } from "../supabase/supabase";
 import { systemPrompt } from "./systemContext";
+import { useUser } from "../hooks/UseUser";
 
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
 const model = "openai/gpt-oss-120b";
 
-export async function sendMsg(activeChatId) {
+export async function sendMsg(activeChatId, user) {
   try {
-    // get user
-    const { data: { user } } = await supabase.auth.getUser();
-    console.log(user)
     // get last user message
     const { data: msgs } = await supabase
       .from("messages")

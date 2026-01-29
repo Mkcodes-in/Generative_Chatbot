@@ -11,17 +11,19 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { handleUpload } from '../utils/storageFile';
 import { needsPdfSearch } from '../utils/needPdfSearch';
 import { question_embedding } from '../api/embedding';
+import { useUser } from '../hooks/UseUser';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
     const { setAiLoader, setThinking } = UseAiLoader();
     const { activeChatId } = UseChat();
+    const { userSession } = useUser();
     const fileInputRef = useRef();
     const [uploading, setUploading] = useState(false);
     const [fileName, setFileName] = useState(null);
     const [file, setFile] = useState(null);
-    
+
     // inputField auto re-size
     const handleInputChange = (e) => {
         setMessage(e.target.value);
@@ -34,13 +36,14 @@ export default function InputField() {
         if (!message.trim()) return;
         if (!activeChatId) return console.error("No active chat ID found.");
 
-        const { data: { user } } = await supabase.auth.getUser();
-        console.log(user)
+        const currentMessage = message;
+        setMessage('');                 
+
         const userMsg = {
             role: "user",
-            message: message,
+            message: currentMessage,
             chat_id: activeChatId,
-            user_id: user.id,
+            user_id: userSession.id,
             file_name: file ? fileName.name : null,
             file_type: file ? fileName.type : null
         };
@@ -60,14 +63,13 @@ export default function InputField() {
             }
         }
 
-        // PDF related question → RAG
         try {
-            if (needsPdfSearch(message)) {
+            if (needsPdfSearch(currentMessage)) {
                 setThinking(true);
-                await question_embedding(message, activeChatId, user.id);
+                await question_embedding(currentMessage, activeChatId, userSession.id);
             } else {
                 setAiLoader(true);
-                await sendMsg(activeChatId);
+                await sendMsg(activeChatId, userSession);
             }
         } catch (error) {
             console.error('error: ', error);
@@ -76,12 +78,10 @@ export default function InputField() {
             setThinking(false);
         }
 
-        setMessage('');
         setFile(null);
         setFileName(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
-
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
