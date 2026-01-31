@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BsArrowUp, BsFileEarmarkPdfFill } from 'react-icons/bs';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
@@ -6,12 +6,14 @@ import { supabase } from '../supabase/supabase';
 import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
 import { uploadFile } from '../utils/uplaodFile';
-import { BiX } from 'react-icons/bi';
+import { BiUpload, BiX } from 'react-icons/bi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { handleUpload } from '../utils/storageFile';
 import { needsPdfSearch } from '../utils/needPdfSearch';
 import { question_embedding } from '../api/embedding';
 import { useUser } from '../hooks/UseUser';
+import { GiPaperClip } from 'react-icons/gi';
+import { ImImages } from 'react-icons/im';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -19,10 +21,11 @@ export default function InputField() {
     const { setAiLoader, setThinking } = UseAiLoader();
     const { activeChatId } = UseChat();
     const { userSession } = useUser();
-    const fileInputRef = useRef();
+    const fileInputRef = useRef(null);
     const [uploading, setUploading] = useState(false);
     const [fileName, setFileName] = useState(null);
     const [file, setFile] = useState(null);
+    const [activeMode, setActiveMode] = useState(false);
 
     // inputField auto re-size
     const handleInputChange = (e) => {
@@ -36,8 +39,9 @@ export default function InputField() {
         if (!message.trim()) return;
         if (!activeChatId) return console.error("No active chat ID found.");
 
+
         const currentMessage = message;
-        setMessage('');                 
+        setMessage('');
 
         const userMsg = {
             role: "user",
@@ -122,7 +126,7 @@ export default function InputField() {
     return (
         <div className="w-full bg-transparent px-4">
             <div
-                className={`relative bottom-5 bg-[#303030] text-white shadow-lg w-full max-w-3xl mx-auto z-30 py-3 overflow-hidden transition-all duration-100 ${message || fileName ? "rounded-3xl pb-12 px-4" : "rounded-full px-13"}`}
+                className={`relative bottom-5 bg-[#303030] text-white shadow-lg w-full max-w-3xl mx-auto z-30 py-3 overflow-hidden transition-all duration-100 rounded-3xl pb-12 px-4`}
             >
                 {/* uploading */}
                 {fileName && (
@@ -176,7 +180,7 @@ export default function InputField() {
                 <label
                     htmlFor="file"
                     className="absolute bottom-2.5 left-2 p-1 rounded-full 
-                 hover:bg-gray-50/10 text-white cursor-pointer"
+                 hover:bg-gray-50/10 text-white cursor-pointer border border-gray-50/20"
                 >
                     <GoPlus
                         size={26}
@@ -185,8 +189,17 @@ export default function InputField() {
                     />
                 </label>
 
+                <button
+                    onClick={() => setActiveMode(prev => !prev)}
+                    className={`absolute flex items-center gap-2 px-2 bottom-2.5 left-12 p-1 rounded-full 
+                 hover:bg-gray-50/10 text-white cursor-pointer border border-gray-50/20 ${activeMode ? "bg-blue-800/60" : ""}`}
+                >
+                    <ImImages size={15} /> Create image
+                </button>
+
                 <input
-                    type="file"
+                    type="
+                    const [] = usestatefile"
                     ref={fileInputRef}
                     className="hidden"
                     accept="application/pdf"
