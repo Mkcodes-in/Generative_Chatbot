@@ -79,7 +79,7 @@ export default function ChatSection() {
         {thinking && (
           <div className='flex justify-start'>
             <div className='px-4 py-2'>
-              <span className="animate-pulse">AI is thinking…</span>
+              <span className="animate-pulse">Reading document...</span>
             </div>
           </div>
         )}
