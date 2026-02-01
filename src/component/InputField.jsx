@@ -189,22 +189,28 @@ export default function InputField() {
                     />
                 </label>
 
-                <button
-                    onClick={() => setActiveMode(prev => !prev)}
-                    className={`absolute flex items-center gap-2 px-2 bottom-2.5 left-12 p-1 rounded-full 
-                 hover:bg-gray-50/10 text-white cursor-pointer border border-gray-50/20 ${activeMode ? "bg-blue-800/60" : ""}`}
-                >
-                    <ImImages size={15} /> Create image
-                </button>
-
                 <input
-                    type="
-                    const [] = usestatefile"
+                    type="file"
                     ref={fileInputRef}
                     className="hidden"
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
+
+                <button
+                    onClick={() => setActiveMode(prev => !prev)}
+                    className={`absolute flex items-center gap-2 px-2 bottom-2.5 left-12 p-1 rounded-full text-white cursor-pointer border border-gray-50/20 ${activeMode ? "bg-blue-800/60" : "hover:bg-gray-50/10"}`}
+                >
+                    <ImImages size={15} /> Create image
+                </button>
+{/* 
+                <input
+                    type="image"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                /> */}
 
                 {/* Send Button */}
                 <button
