@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BsArrowUp, BsFileEarmarkPdfFill } from 'react-icons/bs';
 import { sendMsg } from '../api/api';
 import UseAiLoader from '../hooks/UseAiLoader';
@@ -6,20 +6,19 @@ import { supabase } from '../supabase/supabase';
 import UseChat from '../hooks/UseChat';
 import { GoPlus } from 'react-icons/go';
 import { uploadFile } from '../utils/uplaodFile';
-import { BiUpload, BiX } from 'react-icons/bi';
+import { BiX } from 'react-icons/bi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { handleUpload } from '../utils/storageFile';
 import { needsPdfSearch } from '../utils/needPdfSearch';
 import { question_embedding } from '../api/embedding';
 import { useUser } from '../hooks/UseUser';
-import { GiPaperClip } from 'react-icons/gi';
 import { ImImages } from 'react-icons/im';
 import { generate_Image } from '../utils/generateImage';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
     const textareaRef = useRef(null);
-    const { setAiLoader, setThinking } = UseAiLoader();
+    const { setAiLoader, setThinking, setImageLoader } = UseAiLoader();
     const { activeChatId } = UseChat();
     const { userSession } = useUser();
     const fileInputRef = useRef(null);
@@ -56,21 +55,28 @@ export default function InputField() {
         await supabase.from("messages").insert(userMsg);
 
         if (activeMode === true) {
-            const data = await generate_Image(message, activeChatId);
-            console.log(data)
-            if (data?.ok) {
-                const imageMsg = {
-                    role: "assistant",
-                    message: data.image_url,
-                    chat_id: activeChatId,
-                    user_id: userSession.id,
-                    file_name: file ? fileName.name : null,
-                    file_type: file ? fileName.type : null,
-                    message_type: 'image'
-                }
+            try {
+                setImageLoader(true);
+                const data = await generate_Image(message, activeChatId);
 
-                await supabase.from('messages').insert(imageMsg);
-                return;
+                if (data?.ok) {
+                    const imageMsg = {
+                        role: "assistant",
+                        message: data.image_url,
+                        chat_id: activeChatId,
+                        user_id: userSession.id,
+                        file_name: file ? fileName.name : null,
+                        file_type: file ? fileName.type : null,
+                        message_type: 'image'
+                    }
+
+                    await supabase.from('messages').insert(imageMsg);
+                    return;
+                }
+            } catch (error) {
+                console.error("Error " + error.message);
+            } finally {
+                setImageLoader(false);
             }
         }
 
@@ -218,14 +224,6 @@ export default function InputField() {
                 >
                     <ImImages size={15} /> Create image
                 </button>
-                {/* 
-                <input
-                    type="image"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                /> */}
 
                 {/* Send Button */}
                 <button

@@ -1,5 +1,6 @@
 import React from 'react'
 import { BiDownload, BiX } from 'react-icons/bi'
+import { donwloadImg } from '../utils/downloadImg'
 
 export default function ImgPreview({ image, setSelectedImg }) {
     return (
@@ -21,10 +22,10 @@ export default function ImgPreview({ image, setSelectedImg }) {
 
                 {/* Download Button */}
                 <button
-                    onClick={() => setSelectedImg(null)}
+                    onClick={() => donwloadImg(image)}
                     className="absolute top-2 right-10 text-black text-xl cursor-pointer"
                 >
-                    <BiDownload size={22}/>
+                    <a href="image.png" download={image}><BiDownload size={22}/></a>
                 </button>
 
                 {/* Image Preview */}

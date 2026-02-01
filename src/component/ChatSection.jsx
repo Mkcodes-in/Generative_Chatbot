@@ -5,9 +5,12 @@ import UseChat from '../hooks/UseChat';
 import '../component/style/Response.css'
 import { FiFileText } from 'react-icons/fi';
 import ImgPreview from './ImgPreview';
+import AiLoader from './Loaders/AiLoader';
+import ThinkingLoader from './Loaders/ThinkingLoader';
+import ImageLoader from './Loaders/ImageLoader';
 
 export default function ChatSection() {
-  const { aiLoader, thinking } = UseAiLoader();
+  const { aiLoader, thinking, imageLoader } = UseAiLoader();
   const { state } = UseChat();
   const messages = state?.messages ?? state ?? [];
   const [selectedImg, setSelectedImg] = useState(null);
@@ -86,21 +89,13 @@ export default function ChatSection() {
         ))}
 
         {/* Loader */}
-        {aiLoader && (
-          <div className="flex justify-start">
-            <div className="px-4 py-2">
-              <div className="h-4 w-4 bg-white rounded-full animate-pulse"></div>
-            </div>
-          </div>
-        )}
+        {aiLoader && <AiLoader />}
 
-        {thinking && (
-          <div className='flex justify-start'>
-            <div className='px-4 py-2'>
-              <span className="animate-pulse">Reading document...</span>
-            </div>
-          </div>
-        )}
+        {/* Document Loader */}
+        {thinking && <ThinkingLoader />}
+
+        {/* Image Generator Loader */}
+        {imageLoader && (<ImageLoader />)}
       </div>
     </section>
   )
