@@ -14,6 +14,7 @@ import { question_embedding } from '../api/embedding';
 import { useUser } from '../hooks/UseUser';
 import { GiPaperClip } from 'react-icons/gi';
 import { ImImages } from 'react-icons/im';
+import { generate_Image } from '../utils/generateImage';
 
 export default function InputField() {
     const [message, setMessage] = useState('');
@@ -39,7 +40,6 @@ export default function InputField() {
         if (!message.trim()) return;
         if (!activeChatId) return console.error("No active chat ID found.");
 
-
         const currentMessage = message;
         setMessage('');
 
@@ -49,13 +49,29 @@ export default function InputField() {
             chat_id: activeChatId,
             user_id: userSession.id,
             file_name: file ? fileName.name : null,
-            file_type: file ? fileName.type : null
+            file_type: file ? fileName.type : null,
+            message_type: 'text'
         };
 
-        try {
-            await supabase.from("messages").insert(userMsg);
-        } catch (error) {
-            console.error("Error ", error);
+        await supabase.from("messages").insert(userMsg);
+
+        if (activeMode === true) {
+            const data = await generate_Image(message, activeChatId);
+            console.log(data)
+            if (data?.ok) {
+                const imageMsg = {
+                    role: "assistant",
+                    message: data.image_url,
+                    chat_id: activeChatId,
+                    user_id: userSession.id,
+                    file_name: file ? fileName.name : null,
+                    file_type: file ? fileName.type : null,
+                    message_type: 'image'
+                }
+
+                await supabase.from('messages').insert(imageMsg);
+                return;
+            }
         }
 
         if (file) {
@@ -63,7 +79,6 @@ export default function InputField() {
                 await handleUpload(file, activeChatId);
             } catch (error) {
                 console.error("File upload error:", error);
-                alert("File upload failed: " + error.message);
             }
         }
 
@@ -203,7 +218,7 @@ export default function InputField() {
                 >
                     <ImImages size={15} /> Create image
                 </button>
-{/* 
+                {/* 
                 <input
                     type="image"
                     ref={fileInputRef}

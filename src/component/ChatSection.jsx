@@ -1,17 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import UseAiLoader from '../hooks/UseAiLoader';
 import { marked } from 'marked';
 import UseChat from '../hooks/UseChat';
 import '../component/style/Response.css'
 import { FiFileText } from 'react-icons/fi';
+import ImgPreview from './ImgPreview';
 
 export default function ChatSection() {
   const { aiLoader, thinking } = UseAiLoader();
   const { state } = UseChat();
   const messages = state?.messages ?? state ?? [];
+  const [selectedImg, setSelectedImg] = useState(null);
 
   return (
     <section className="max-w-7xl mx-auto text-gray-50 py-4 pr-5">
+      {/* Image preview */}
+      {selectedImg && (<ImgPreview
+        image={selectedImg}
+        setSelectedImg={setSelectedImg} />
+      )}
+
       <div className="flex flex-col gap-2 max-w-4xl mx-auto">
         {messages.map((itm, index) => (
           <div
@@ -49,20 +57,30 @@ export default function ChatSection() {
 
               {/* message content */}
               {itm.role === "assistant" ? (
-                <div
-                  className="markdown"
-                  dangerouslySetInnerHTML={{
-                    __html: marked((itm.content ?? itm.message) || "", {
-                      gfm: true,
-                      breaks: true,
-                    }),
-                  }}
-                />
+                itm.message_type === "image" ? (
+                  <img
+                    onClick={() => setSelectedImg(itm.message)}
+                    src={itm.content ?? itm.message}
+                    alt="assistant"
+                    className="mt-2 rounded-xl max-w-[280px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[520px] h-auto object-contain cursor-pointer"
+                  />
+                ) : (
+                  <div
+                    className="markdown"
+                    dangerouslySetInnerHTML={{
+                      __html: marked((itm.content ?? itm.message) || "", {
+                        gfm: true,
+                        breaks: true,
+                      }),
+                    }}
+                  />
+                )
               ) : (
                 <p className="whitespace-pre-wrap">
                   {itm.content ?? itm.message}
                 </p>
-              )}
+              )
+              }
             </div>
           </div>
         ))}
