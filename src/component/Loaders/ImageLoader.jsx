@@ -5,7 +5,7 @@ export default function ImageLoader() {
         <div className='px-4 flex justify-start'>
             <div className="flex flex-col items-center gap-4 mt-6">
                 {/* image box */}
-                <div className="relative w-[280px] sm:w-[340px] md:w-[420px] h-[220px] rounded-xl overflow-hidden border border-gray-200">
+                <div className="relative w-[280px] sm:w-[340px] md:w-[420px] h-[320px] rounded-xl overflow-hidden border border-gray-200">
 
                     {/* Shimmer effect */}
                     <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />

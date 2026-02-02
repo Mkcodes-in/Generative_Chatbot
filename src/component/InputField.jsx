@@ -41,6 +41,9 @@ export default function InputField() {
 
         const currentMessage = message;
         setMessage('');
+        if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+        }
 
         const userMsg = {
             role: "user",
