@@ -1,4 +1,4 @@
-# Chat2PDF: A Full-Stack AI-Powered Chatbot with PDF Parsing & Image Generation 🚀
+# Chat2PDF: A Full-Stack AI-Powered Chatbot with PDF Parsing & Image Generation 
 
 **Chat2PDF** is an innovative full-stack application that leverages AI to enable users to interact with PDFs in a conversational way. It includes features like PDF parsing, contextual question answering, and AI-generated images, providing an engaging multi-modal experience.
 
@@ -47,6 +47,10 @@
 6. **AI Image Generation**:  
    Users can generate images based on text prompts using Stability AI integrated into the platform.
 
+## Demo Video
+
+https://github.com/user-attachments/assets/28f6592e-64d1-4d8d-ba42-165b7f156070
+
 ## Screenshots
 
 <img width="1919" height="939" alt="image" src="https://github.com/user-attachments/assets/09c7bf58-d148-4433-830d-b14a125ecc13" />
@@ -57,6 +61,7 @@
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/9921d11a-3597-4229-ad85-e7f5c519ebb7" />
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/eb276078-0dea-423c-a55b-cc38148182bf" />
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/60f6cf9a-5725-4ee2-8fa4-22e281d22a45" />
+
 
 ## Installation
 
